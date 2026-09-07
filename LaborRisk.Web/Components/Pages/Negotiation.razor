@@ -1,0 +1,145 @@
+﻿Razor CSHTML
+@page "/negotiation"
+@using LaborRisk.Domain
+@using LaborRisk.LegalEngine
+@using Microsoft.AspNetCore.Components.Web
+@inject SimulationService SimService
+@rendermode InteractiveServer
+
+<PageTitle>Huấn luyện Phát hiện Rủi ro Hợp đồng</PageTitle>
+
+<div class="container my-4" style="max-width: 800px;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-bold text-primary mb-0">Chương trình Huấn luyện Ký Hợp đồng</h3>
+        <span class="badge bg-primary fs-6">Tổng điểm: @totalScore / 100</span>
+    </div>
+
+    @if (currentIndex < scenarios.Count)
+    {
+        var currentScenario = scenarios[currentIndex];
+
+        <div class="card shadow-sm mb-4 border-primary">
+            <div class="card-header bg-primary text-white fw-bold">
+                Phần @(currentIndex + 1)/5: @currentScenario.Category
+            </div>
+            <div class="card-body">
+                <h5 class="card-title text-dark">Điều khoản trong hợp đồng:</h5>
+                <blockquote class="blockquote p-3 bg-light rounded border-start border-4 border-warning fs-6">
+                    "@currentScenario.ClauseText"
+                </blockquote>
+
+                <p class="fw-bold mt-3">Bạn quyết định xử lý điều khoản này như thế nào?</p>
+
+                <div class="d-flex gap-3">
+                    <button type="button" class="btn btn-danger flex-fill py-2" @onclick="() => HandleUserChoice(false)" disabled="@isProcessing">
+                        Từ chối, yêu cầu đàm phán lại
+                    </button>
+                    <button type="button"class="btn btn-success flex-fill py-2" @onclick="() => HandleUserChoice(true)" disabled="@isProcessing">
+                        Chấp nhận và đồng ý Ký
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(aiFeedback))
+        {
+            <div class="card shadow-sm mb-4 border-info">
+                <div class="card-header bg-info text-white fw-bold">
+                    🤖 Nhận xét từ AI Coach (Qwen2.5)
+                </div>
+                <div class="card-body">
+                    <p style="white-space: pre-wrap;">@aiFeedback</p>
+                    <div class="alert alert-secondary mt-2 mb-0 small">
+                        <strong>Căn cứ pháp lý:</strong> @currentScenario.Explanation
+                    </div>
+                    <button type ="button"class="btn btn-primary mt-3 w-100" @onclick="NextQuestion">
+                        Câu tiếp theo ➔
+                    </button>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <!-- Màn hình kết quả đánh giá năng lực -->
+        <div class="card shadow text-center p-4">
+            <h2 class="fw-bold text-success mb-3">Kết quả Đánh giá Năng lực</h2>
+            <div class="display-3 fw-bold my-2 @(totalScore >= 80 ? "text-success" : "text-danger")">
+                @totalScore / 100 Điểm
+            </div>
+
+            @if (totalScore >= 80)
+            {
+                <div class="alert alert-success fs-5 my-3">
+                    <strong>ĐỦ ĐIỀU KIỆN KÝ HỢP ĐỒNG!</strong><br />
+                    Bạn có khả năng nhận diện bẫy pháp lý rất tốt. Bạn đã sẵn sàng tự tin đàm phán và ký kết hợp đồng lao động ngoài thực tế.
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning fs-5 my-3">
+                    <strong>CHƯA ĐỦ ĐIỀU KIỆN KÝ HỢP ĐỒNG!</strong><br />
+                    Điểm an toàn của bạn chưa đạt yêu cầu (Tối thiểu 80/100). Bạn nên xem lại các kiến thức pháp lý trên để tránh gặp rủi ro khi đi làm.
+                </div>
+            }
+
+            <button type="button" class="btn btn-outline-primary btn-lg mt-2" @onclick="RestartTraining">
+                Luyện tập lại từ đầu
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    private List<RiskQuestionScenario> scenarios = new();
+    private int currentIndex = 0;
+    private int totalScore = 0;
+    private bool isProcessing = false;
+    private bool showFeedback = false;
+    private string aiFeedback = "";
+
+    protected override void OnInitialized()
+    {
+        scenarios = SimService.GetTrainingScenarios();
+    }
+
+    private async Task HandleUserChoice(bool userAccepted)
+    {
+        isProcessing = true;
+        var currentScenario = scenarios[currentIndex];
+
+        // Lựa chọn đúng khi: Người dùng từ chối điều khoản có rủi ro OR đồng ý điều khoản an toàn
+        bool isCorrect = (userAccepted == !currentScenario.IsRiskyClause);
+
+        if (isCorrect)
+        {
+            totalScore += currentScenario.Points;
+        }
+
+        // Gọi Ollama AI nhận xét bài làm
+        aiFeedback = await SimService.EvaluateDecisionWithAIAsync(
+            currentScenario.ClauseText,
+            userAccepted,
+            currentScenario.IsRiskyClause
+        );
+        showFeedback = true;
+        isProcessing = false;
+        StateHasChanged();
+    }
+
+    private void NextQuestion()
+    {
+        showFeedback = false;
+        aiFeedback = "";
+        currentIndex++;
+        StateHasChanged();
+    }
+
+    private void RestartTraining()
+    {
+        currentIndex = 0;
+        totalScore = 0;
+        aiFeedback = "";
+        showFeedback = false;
+    }
+}

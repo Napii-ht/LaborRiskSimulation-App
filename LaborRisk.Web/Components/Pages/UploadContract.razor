@@ -1,0 +1,92 @@
+﻿<h3>UploadContract</h3>
+
+@page "/upload-contract"
+@using LaborRisk.LegalEngine
+@inject DocumentReaderService DocService
+@inject ContractParserAgent ParserAgent
+@rendermode InteractiveServer
+
+<PageTitle>Phân tích Hợp đồng từ File</PageTitle>
+
+<div class="container my-4" style="max-width: 800px;">
+    <h3 class="fw-bold text-primary mb-3">Tải lên Hợp đồng (Word / PDF) để AI quét lỗi</h3>
+
+    <div class="card p-4 shadow-sm mb-4 border-dashed text-center">
+        <InputFile OnChange="LoadFile" accept=".docx, .pdf" class="form-control mb-3" />
+        <small class="text-muted">Hỗ trợ định dạng .docx hoặc .pdf</small>
+    </div>
+
+    @if (isAnalyzing)
+    {
+        <div class="alert alert-info d-flex align-items-center">
+            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+            <span>AI Qwen2.5 đang đọc file và đối chiếu Bộ luật Lao động 2019...</span>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(analysisResult))
+    {
+        <div class="card shadow-sm border-warning">
+            <div class="card-header bg-warning fw-bold">🔍 Kết quả phân tích từ AI Coach</div>
+            <div class="card-body">
+                <pre style="white-space: pre-wrap; word-break: break-word;">@analysisResult</pre>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private bool isAnalyzing = false;
+    private string analysisResult = "";
+
+    private async Task LoadFile(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file == null) return;
+
+        isAnalyzing = true;
+        analysisResult = "";
+        StateHasChanged();
+
+        try
+        {
+            // Giới hạn file tối đa 10MB
+            using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            ms.Position = 0;
+
+            // 1. Đọc nội dung văn bản từ Stream
+            string textContent = DocService.ExtractTextFromStream(ms, file.Name);
+
+            if (!string.IsNullOrWhiteSpace(textContent))
+            {
+                // 2. Gọi AI bóc tách dữ liệu hợp đồng (Khởi tạo biến parsedContract ở đây)
+                var parsedContract = await ParserAgent.ExtractDataAsync(textContent);
+
+                // 3. Cho LegalRuleEngine đánh giá các rủi ro
+                var ruleEngine = new LegalRuleEngine();
+                var assessment = ruleEngine.EvaluateContract(parsedContract);
+
+                // 4. Hiển thị kết quả rủi ro
+                if (assessment.Risks != null && assessment.Risks.Count > 0)
+                {
+                    analysisResult = string.Join("\n\n", assessment.Risks.Select(r => $" {r}"));
+                }
+                else
+                {
+                    analysisResult = "Hợp đồng không phát hiện điều khoản rủi ro nghiêm trọng theo Bộ luật Lao động 2019.";
+                }
+            }
+            else
+            {
+                analysisResult = "Không thể đọc được nội dung từ file đã tải lên.";
+            }
+        }
+        finally
+        {
+            isAnalyzing = false;
+            StateHasChanged();
+        }
+    }
+}

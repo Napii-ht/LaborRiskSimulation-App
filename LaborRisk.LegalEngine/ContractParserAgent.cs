@@ -25,8 +25,14 @@ namespace LaborRisk.LegalEngine
 
             try
             {
-                string prompt = @"Bạn là AI phân tích hợp đồng lao động Việt Nam. Hãy đọc đoạn văn bản hợp đồng và bóc tách các chỉ số. Trả về ĐÚNG 1 JSON duy nhất có cấu trúc như sau:
-{
+                string prompt = $@"Bạn là AI chuyên gia phân tích hợp đồng lao động và pháp chế doanh nghiệp theo Bộ luật Lao động Việt Nam 2019. 
+Hãy đọc kỹ nội dung hợp đồng dưới đây, bóc tách dữ liệu và đối chiếu các điều khoản xem có điểm nào vi phạm luật hoặc gây rủi ro không.
+
+NỘI DUNG HỢP ĐỒNG CẦN PHÂN TÍCH:
+{rawText}
+
+Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất (không kèm theo bất kỳ văn bản giải thích nào ngoài JSON) theo mẫu sau:
+{{
   ""probationDays"": 60,
   ""baseSalary"": 10000000,
   ""probationSalary"": 8500000,
@@ -35,8 +41,7 @@ namespace LaborRisk.LegalEngine
   ""noticeDaysEmployee"": 30,
   ""hasVagueJobDescription"": false,
   ""hasDegreeRetention"": false
-}
-Chỉ trả về chuỗi JSON, không kèm bất kỳ lời giải thích nào khác.";
+}}";
 
                 // 1. Cấu hình Payload chuẩn cho Ollama API
                 var payload = new

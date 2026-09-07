@@ -71,7 +71,7 @@
                 // 4. Hiển thị kết quả rủi ro
                 if (assessment.Risks != null && assessment.Risks.Count > 0)
                 {
-                    analysisResult = string.Join("\n\n", assessment.Risks.Select(r => $" {r}"));
+                    analysisResult = string.Join("\n\n", assessment.Risks.Select(r => $" {r.Description}"));
                 }
                 else
                 {

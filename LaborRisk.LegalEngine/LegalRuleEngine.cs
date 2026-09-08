@@ -35,7 +35,6 @@ namespace LaborRisk.LegalEngine
             }
 
             // NHÓM 3: Cam kết bảo mật, không cạnh tranh (NDA & Non-compete)
-            // (Bạn có thể mở rộng thêm biến kiểm tra trong ContractInput nếu phát hiện điều khoản hạn chế việc làm vô lý)
             if (contract.HasVagueJobDescription) // Tạm map hoặc thay thế bằng biến check Non-compete/NDA độc hại
             {
                 var risk = new RiskItem { Category = "Nhóm 3: Bảo mật & Cạnh tranh", Title = "Cam kết hạn chế cạnh tranh bất hợp lý", Description = "Thỏa thuận hạn chế việc làm sau khi nghỉ việc nhưng không kèm hỗ trợ sinh phí.", LawReference = "Điều 23 BLLĐ 2019", DeductedScore = 15 };

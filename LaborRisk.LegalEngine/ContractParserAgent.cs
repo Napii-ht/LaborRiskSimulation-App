@@ -15,6 +15,7 @@ namespace LaborRisk.LegalEngine
     {
         private readonly HttpClient _http;
         private static string GroqApiKey => Environment.GetEnvironmentVariable("GROQ_API_KEY") ?? string.Empty;
+
         public ContractParserAgent(HttpClient http)
         {
             _http = http;
@@ -27,19 +28,31 @@ namespace LaborRisk.LegalEngine
 
             try
             {
-                string prompt = @"Bạn là AI chuyên gia phân tích hợp đồng lao động và pháp chế doanh nghiệp theo Bộ luật Lao động Việt Nam 2019. 
-Hãy đọc kỹ nội dung hợp đồng dưới đây, bóc tách dữ liệu và đối chiếu các điều khoản xem có điểm nào vi phạm luật hoặc gây rủi ro không.
+                string prompt = @"
+Bạn là Chuyên gia Pháp lý và Cố vấn Đàm phán Hợp đồng Lao động theo Bộ luật Lao động Việt Nam 2019.
+Nhiệm vụ của bạn là phân tích hợp đồng được cung cấp và đưa ra cố vấn chiến lược cho từng điều khoản.
 
-Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất (không kèm theo bất kỳ văn bản giải thích nào ngoài JSON) theo mẫu:
+VỚI MỖI ĐIỀU KHOẢN, HÃY XÁC ĐỊNH 'Decision' THEO 3 HƯỚNG:
+1. 'DongY': Điều khoản chuẩn xác, công bằng, tuân thủ pháp luật.
+2. 'TuChoi': Điều khoản vi phạm điều cấm của pháp luật nghiêm trọng, không thể thỏa thuận.
+3. 'DamPhan': Điều khoản KHÔNG sai luật hoàn toàn, nhưng chứa rủi ro, mập mờ hoặc gây bất lợi lớn cho người lao động.
+
+Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất (không kèm văn bản giải thích ngoài JSON) theo mẫu:
 {
-  ""probationDays"": 60,
-  ""baseSalary"": 10000000,
-  ""probationSalary"": 8500000,
-  ""penaltyAmount"": 0,
-  ""overtimeMultiplier"": 1.5,
-  ""noticeDaysEmployee"": 30,
-  ""hasVagueJobDescription"": false,
-  ""hasDegreeRetention"": false
+  ""Clauses"": [
+    {
+      ""ClauseTitle"": ""Tên điều khoản (VD: Thử việc, Tiền lương, Bồi thường)"",
+      ""OriginalText"": ""Nội dung gốc trong hợp đồng"",
+      ""Decision"": ""DongY"",
+      ""RiskLevel"": ""Thap"",
+      ""LegalReference"": ""Điều 25 Bộ luật Lao động 2019"",
+      ""Strategy"": {
+        ""WhyNegotiate"": ""Lý do chi tiết vì sao nên đàm phán lại"",
+        ""ProposedText"": ""Đoạn văn bản hợp đồng đề xuất sửa lại"",
+        ""TalkingPoints"": ""Gợi ý kịch bản lời nói khi thương lượng với sếp""
+      }
+    }
+  ]
 }";
 
                 // 1. Cấu hình Payload cho Groq API (Qwen 2.5)

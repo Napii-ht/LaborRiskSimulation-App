@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -11,7 +11,6 @@ namespace LaborRisk.LegalEngine
     public class ContractParserAgent
     {
         private readonly HttpClient _http;
-
         public ContractParserAgent(HttpClient http)
         {
             _http = http;
@@ -43,24 +42,36 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
   ""hasDegreeRetention"": false
 }}";
 
-                // 1. Cấu hình Payload chuẩn cho Ollama API
+                // 1. Cấu hình Request cho Groq Cloud API
                 var payload = new
                 {
-                    model = "qwen2.5:7b-instruct-q4_K_M",
-                    prompt = $"{prompt}\n\nVĂN BẢN HỢP ĐỒNG:\n{rawText}",
-                    stream = false
+                    model = "qwen-2.5-32b", // Hoặc model Groq đang hỗ trợ
+                    messages = new[]
+                    {
+                        new { role = "system", content = prompt },
+                        new { role = "user", content = $"VĂN BẢN HỢP ĐỒNG:\n{rawText}" }
+                     },
+                    temperature = 0.2
                 };
 
-                var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://api.groq.com/openai/v1/chat/completions");
+                request.Headers.Add("Authorization", $"Bearer {apiKey}"); // Truyền API Key từ Groq
+                request.Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
 
-                // 2. Gọi API đến Ollama Local
-                var response = await _http.PostAsync("http://localhost:11434/api/generate", content);
+                // 2. Gọi API đến Groq Cloud Server
+                var response = await _http.SendAsync(request);
 
                 if (response.IsSuccessStatusCode)
                 {
                     string resContent = await response.Content.ReadAsStringAsync();
                     using var doc = JsonDocument.Parse(resContent);
-                    string aiText = doc.RootElement.GetProperty("response").GetString() ?? "";
+
+                    // Cấu trúc OpenAI JSON: choices[0].message.content
+                    string aiText = doc.RootElement
+                        .GetProperty("choices")[0]
+                        .GetProperty("message")
+                        .GetProperty("content")
+                        .GetString() ?? "";
 
                     // 3. Trích xuất JSON từ chuỗi phản hồi của AI
                     var match = Regex.Match(aiText, @"\{.*\}", RegexOptions.Singleline);

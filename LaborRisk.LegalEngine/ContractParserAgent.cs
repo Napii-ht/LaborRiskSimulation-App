@@ -11,7 +11,6 @@ namespace LaborRisk.LegalEngine
     public class ContractParserAgent
     {
         private readonly HttpClient _http;
-        private const string GroqApiKey = "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";
         public ContractParserAgent(HttpClient http)
         {
             _http = http;

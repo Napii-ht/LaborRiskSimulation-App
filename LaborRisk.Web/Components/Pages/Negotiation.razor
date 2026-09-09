@@ -1,12 +1,11 @@
-﻿Razor CSHTML
-@page "/negotiation"
+﻿@page "/negotiation"
 @using LaborRisk.Domain
 @using LaborRisk.LegalEngine
 @using Microsoft.AspNetCore.Components.Web
 @inject SimulationService SimService
 @rendermode InteractiveServer
 
-<PageTitle>Huấn luyện Phát hiện Rủi ro Hợp đồng</PageTitle>
+<PageTitle>Huấn luyện & Cố vấn Đàm phán Hợp đồng</PageTitle>
 
 <div class="container my-4" style="max-width: 800px;">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -30,12 +29,16 @@
 
                 <p class="fw-bold mt-3">Bạn quyết định xử lý điều khoản này như thế nào?</p>
 
-                <div class="d-flex gap-3">
-                    <button type="button" class="btn btn-danger flex-fill py-2" @onclick="() => HandleUserChoice(false)" disabled="@isProcessing">
-                        Từ chối, yêu cầu đàm phán lại
+                <!-- Bộ 3 nút quyết định chiến lược -->
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-danger flex-fill py-2 fw-bold" @onclick='() => HandleUserChoice("TuChoi")' disabled="@isProcessing">
+                        ❌ Từ chối
                     </button>
-                    <button type="button"class="btn btn-success flex-fill py-2" @onclick="() => HandleUserChoice(true)" disabled="@isProcessing">
-                        Chấp nhận và đồng ý Ký
+                    <button type="button" class="btn btn-warning text-dark flex-fill py-2 fw-bold" @onclick='() => HandleUserChoice("DamPhan")' disabled="@isProcessing">
+                        💡 Đàm phán lại
+                    </button>
+                    <button type="button" class="btn btn-success flex-fill py-2 fw-bold" @onclick='() => HandleUserChoice("DongY")' disabled="@isProcessing">
+                        ✅ Đồng ý Ký
                     </button>
                 </div>
             </div>
@@ -45,14 +48,46 @@
         {
             <div class="card shadow-sm mb-4 border-info">
                 <div class="card-header bg-info text-white fw-bold">
-                    🤖 Nhận xét từ AI Coach (Qwen2.5)
+                    🤖 Nhận xét & Chiến lược từ AI Coach
                 </div>
                 <div class="card-body">
-                    <p style="white-space: pre-wrap;">@aiFeedback</p>
-                    <div class="alert alert-secondary mt-2 mb-0 small">
+                    <!-- Đánh giá tổng quan -->
+                    <p style="white-space: pre-wrap;" class="fs-6">@aiFeedback</p>
+
+                    <div class="alert alert-secondary mt-2 mb-3 small">
                         <strong>Căn cứ pháp lý:</strong> @currentScenario.Explanation
                     </div>
-                    <button type ="button"class="btn btn-primary mt-3 w-100" @onclick="NextQuestion">
+
+                    <!-- Khung hiển thị Kịch bản đàm phán sâu nếu điều khoản cần đàm phán hoặc người dùng chọn đàm phán -->
+                    @if (userChoice == "DamPhan" || currentScenario.IsRiskyClause)
+                    {
+                        <div class="card border-warning bg-light mb-3">
+                            <div class="card-body">
+                                <h6 class="fw-bold text-warning-emphasis mb-3">💡 KHUNG CỐ VẤN ĐÀM PHÁN CHI TIẾT:</h6>
+
+                                <div class="mb-2">
+                                    <strong class="text-danger">1. Phân tích điểm thiệt thòi:</strong>
+                                    <p class="mb-1 small text-dark">Điều khoản này mập mờ hoặc tạo lợi thế đơn phương cho phía tuyển dụng. Nếu không sửa, bạn sẽ chịu ràng buộc rủi ro khi có tranh chấp.</p>
+                                </div>
+
+                                <div class="mb-2">
+                                    <strong class="text-success">2. Văn bản đề xuất sửa lại (Drafting):</strong>
+                                    <div class="p-2 bg-white border border-success rounded small text-monospace">
+                                        <code>"Hai bên thỏa thuận điều chỉnh nội dung điều khoản thành: Cung cấp điều kiện làm việc minh bạch, quyền lợi và trách nhiệm được quy định rõ ràng theo quy định của Bộ luật Lao động."</code>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <strong class="text-primary">3. Kịch bản thương lượng (Talking Points với HR/Sếp):</strong>
+                                    <p class="p-2 bg-white border border-info rounded small mb-0">
+                                        <em>"Em rất mong muốn đồng hành lâu dài cùng công ty. Tuy nhiên ở điều khoản này, em đề xuất mình làm rõ hơn các tiêu chí để hai bên dễ làm việc và tránh hiểu lầm về sau ạ."</em>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <button type="button" class="btn btn-primary w-100 py-2 fw-bold" @onclick="NextQuestion">
                         Câu tiếp theo ➔
                     </button>
                 </div>
@@ -72,14 +107,14 @@
             {
                 <div class="alert alert-success fs-5 my-3">
                     <strong>ĐỦ ĐIỀU KIỆN KÝ HỢP ĐỒNG!</strong><br />
-                    Bạn có khả năng nhận diện bẫy pháp lý rất tốt. Bạn đã sẵn sàng tự tin đàm phán và ký kết hợp đồng lao động ngoài thực tế.
+                    Bạn có khả năng nhận diện bẫy pháp lý và tư duy đàm phán rất tốt. Bạn đã sẵn sàng tự tin thương lượng và ký kết hợp đồng ngoài thực tế.
                 </div>
             }
             else
             {
                 <div class="alert alert-warning fs-5 my-3">
                     <strong>CHƯA ĐỦ ĐIỀU KIỆN KÝ HỢP ĐỒNG!</strong><br />
-                    Điểm an toàn của bạn chưa đạt yêu cầu (Tối thiểu 80/100). Bạn nên xem lại các kiến thức pháp lý trên để tránh gặp rủi ro khi đi làm.
+                    Điểm an toàn của bạn chưa đạt yêu cầu (Tối thiểu 80/100). Bạn nên thực hành đàm phán thêm để tránh gặp rủi ro khi đi làm.
                 </div>
             }
 
@@ -97,31 +132,46 @@
     private bool isProcessing = false;
     private bool showFeedback = false;
     private string aiFeedback = "";
+    private string userChoice = "";
 
     protected override void OnInitialized()
     {
         scenarios = SimService.GetTrainingScenarios();
     }
 
-    private async Task HandleUserChoice(bool userAccepted)
+    private async Task HandleUserChoice(string choice)
     {
         isProcessing = true;
+        userChoice = choice;
         var currentScenario = scenarios[currentIndex];
 
-        // Lựa chọn đúng khi: Người dùng từ chối điều khoản có rủi ro OR đồng ý điều khoản an toàn
-        bool isCorrect = (userAccepted == !currentScenario.IsRiskyClause);
+        // Lập luận tính điểm:
+        // - Nếu điều khoản rủi ro: Lựa chọn "TuChoi" hoặc "DamPhan" đều tính đúng điểm
+        // - Nếu điều khoản an toàn: Lựa chọn "DongY" tính đúng điểm
+        bool isCorrect = false;
+        if (currentScenario.IsRiskyClause)
+        {
+            isCorrect = (choice == "TuChoi" || choice == "DamPhan");
+        }
+        else
+        {
+            isCorrect = (choice == "DongY");
+        }
 
         if (isCorrect)
         {
             totalScore += currentScenario.Points;
         }
 
-        // Gọi Ollama AI nhận xét bài làm
+        // Chuyển đổi lựa chọn sang dạng boolean để giữ nguyên hàm EvaluateDecisionWithAIAsync của bạn
+        bool userAccepted = (choice == "DongY");
+
         aiFeedback = await SimService.EvaluateDecisionWithAIAsync(
             currentScenario.ClauseText,
             userAccepted,
             currentScenario.IsRiskyClause
         );
+
         showFeedback = true;
         isProcessing = false;
         StateHasChanged();
@@ -131,6 +181,7 @@
     {
         showFeedback = false;
         aiFeedback = "";
+        userChoice = "";
         currentIndex++;
         StateHasChanged();
     }
@@ -140,6 +191,7 @@
         currentIndex = 0;
         totalScore = 0;
         aiFeedback = "";
+        userChoice = "";
         showFeedback = false;
     }
 }

@@ -110,7 +110,6 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
 
         private ContractInput FallbackMock(string text)
         {
-            // Giữ nguyên đoạn code FallbackMock của bạn
             text ??= "";
             return new ContractInput
             {

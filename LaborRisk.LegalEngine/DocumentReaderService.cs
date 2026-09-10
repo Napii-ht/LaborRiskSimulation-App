@@ -20,7 +20,24 @@ namespace LaborRisk.LegalEngine
                 _ => throw new NotSupportedException("Chỉ hỗ trợ file .docx, .pdf hoặc .txt")
             };
         }
+        public string HighlightRiskyClauses(string fullContractText, List<string> riskySnippets)
+        {
+            if (string.IsNullOrEmpty(fullContractText) || riskySnippets == null || !riskySnippets.Any())
+                return fullContractText;
 
+            string highlightedText = fullContractText.Replace("\n", "<br />");
+
+            foreach (var snippet in riskySnippets)
+            {
+                if (!string.IsNullOrWhiteSpace(snippet))
+                {
+                    string span = $"<mark class='bg-warning text-dark p-1 rounded fw-bold'>{snippet}</mark>";
+                    highlightedText = highlightedText.Replace(snippet, span);
+                }
+            }
+
+            return highlightedText;
+        }
         private string ReadWordFromStream(Stream stream)
         {
             var sb = new StringBuilder();

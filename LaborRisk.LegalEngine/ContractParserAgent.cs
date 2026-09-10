@@ -1,16 +1,21 @@
 using System;
 using System.Net.Http;
+using System.Reflection.Emit;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Math;
 using LaborRisk.Domain;
+using UglyToad.PdfPig.Graphics.Operations.SpecialGraphicsState;
 
 namespace LaborRisk.LegalEngine
 {
     public class ContractParserAgent
     {
         private readonly HttpClient _http;
+        private static string GroqApiKey => Environment.GetEnvironmentVariable("GROQ_API_KEY") ?? string.Empty;
+
         public ContractParserAgent(HttpClient http)
         {
             _http = http;
@@ -18,47 +23,58 @@ namespace LaborRisk.LegalEngine
 
         public async Task<ContractInput> ExtractDataAsync(string rawText, string apiKey = "")
         {
-            // Nếu rawText rỗng thì mới fallback
             if (string.IsNullOrWhiteSpace(rawText))
                 return FallbackMock(rawText);
 
             try
             {
-                string prompt = $@"Bạn là AI chuyên gia phân tích hợp đồng lao động và pháp chế doanh nghiệp theo Bộ luật Lao động Việt Nam 2019. 
-Hãy đọc kỹ nội dung hợp đồng dưới đây, bóc tách dữ liệu và đối chiếu các điều khoản xem có điểm nào vi phạm luật hoặc gây rủi ro không.
+                string prompt = @"
+Bạn là Chuyên gia Pháp lý và Cố vấn Đàm phán Hợp đồng Lao động theo Bộ luật Lao động Việt Nam 2019.
+Nhiệm vụ của bạn là phân tích hợp đồng được cung cấp và đưa ra cố vấn chiến lược cho từng điều khoản.
 
-NỘI DUNG HỢP ĐỒNG CẦN PHÂN TÍCH:
-{rawText}
+VỚI MỖI ĐIỀU KHOẢN, HÃY XÁC ĐỊNH 'Decision' THEO 3 HƯỚNG:
+1. 'DongY': Điều khoản chuẩn xác, công bằng, tuân thủ pháp luật.
+2. 'TuChoi': Điều khoản vi phạm điều cấm của pháp luật nghiêm trọng, không thể thỏa thuận.
+3. 'DamPhan': Điều khoản KHÔNG sai luật hoàn toàn, nhưng chứa rủi ro, mập mờ hoặc gây bất lợi lớn cho người lao động.
 
-Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất (không kèm theo bất kỳ văn bản giải thích nào ngoài JSON) theo mẫu sau:
-{{
-  ""probationDays"": 60,
-  ""baseSalary"": 10000000,
-  ""probationSalary"": 8500000,
-  ""penaltyAmount"": 0,
-  ""overtimeMultiplier"": 1.5,
-  ""noticeDaysEmployee"": 30,
-  ""hasVagueJobDescription"": false,
-  ""hasDegreeRetention"": false
-}}";
+Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất (không kèm văn bản giải thích ngoài JSON) theo mẫu:
+{
+  ""Clauses"": [
+    {
+      ""ClauseTitle"": ""Tên điều khoản (VD: Thử việc, Tiền lương, Bồi thường)"",
+      ""OriginalText"": ""Nội dung gốc trong hợp đồng"",
+      ""Decision"": ""DongY"",
+      ""RiskLevel"": ""Thap"",
+      ""LegalReference"": ""Điều 25 Bộ luật Lao động 2019"",
+      ""Strategy"": {
+        ""WhyNegotiate"": ""Lý do chi tiết vì sao nên đàm phán lại"",
+        ""ProposedText"": ""Đoạn văn bản hợp đồng đề xuất sửa lại"",
+        ""TalkingPoints"": ""Gợi ý kịch bản lời nói khi thương lượng với sếp""
+      }
+    }
+  ]
+}";
 
-                // 1. Cấu hình Request cho Groq Cloud API
+                // 1. Cấu hình Payload cho Groq API (Qwen 2.5)
                 var payload = new
                 {
-                    model = "qwen-2.5-32b", // Hoặc model Groq đang hỗ trợ
+                    model = "qwen-2.5-32b",
                     messages = new[]
                     {
                         new { role = "system", content = prompt },
                         new { role = "user", content = $"VĂN BẢN HỢP ĐỒNG:\n{rawText}" }
-                     },
+                    },
                     temperature = 0.2
                 };
 
                 var request = new HttpRequestMessage(HttpMethod.Post, "https://api.groq.com/openai/v1/chat/completions");
-                request.Headers.Add("Authorization", $"Bearer {apiKey}"); // Truyền API Key từ Groq
+
+                // Dùng Key truyền vào hoặc Key mặc định
+                string activeKey = string.IsNullOrWhiteSpace(apiKey) ? GroqApiKey : apiKey;
+                request.Headers.Add("Authorization", $"Bearer {activeKey}");
                 request.Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
 
-                // 2. Gọi API đến Groq Cloud Server
+                // 2. Gọi Cloud API
                 var response = await _http.SendAsync(request);
 
                 if (response.IsSuccessStatusCode)
@@ -66,15 +82,14 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
                     string resContent = await response.Content.ReadAsStringAsync();
                     using var doc = JsonDocument.Parse(resContent);
 
-                    // Cấu trúc OpenAI JSON: choices[0].message.content
+                    // Trích xuất nội dung trả về theo chuẩn OpenAI/Groq
                     string aiText = doc.RootElement
                         .GetProperty("choices")[0]
                         .GetProperty("message")
                         .GetProperty("content")
                         .GetString() ?? "";
 
-                    // 3. Trích xuất JSON từ chuỗi phản hồi của AI
-                    var match = Regex.Match(aiText, @"\{.*\}", RegexOptions.Singleline);
+                    var match = System.Text.RegularExpressions.Regex.Match(aiText, @"\{.*\}", System.Text.RegularExpressions.RegexOptions.Singleline);
                     string json = match.Success ? match.Value : aiText;
 
                     var result = JsonSerializer.Deserialize<ContractInput>(json, new JsonSerializerOptions
@@ -87,7 +102,7 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
             }
             catch (Exception)
             {
-                // Khi Ollama tắt hoặc gặp sự cố, tự động dùng FallbackMock để không làm crash app
+                // Tự động dùng Fallback nếu gặp sự cố mạng
             }
 
             return FallbackMock(rawText);

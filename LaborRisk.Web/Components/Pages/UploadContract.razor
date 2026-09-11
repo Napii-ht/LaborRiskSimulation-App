@@ -1,6 +1,7 @@
 ﻿<h3>UploadContract</h3>
 
 @page "/upload-contract"
+@using LaborRisk.Domain
 @using LaborRisk.LegalEngine
 @inject DocumentReaderService DocService
 @inject ContractParserAgent ParserAgent
@@ -24,12 +25,45 @@
         </div>
     }
 
-    @if (!string.IsNullOrEmpty(analysisResult))
+    @if (parsedContract != null)
     {
-        <div class="card shadow-sm border-warning">
-            <div class="card-header bg-warning fw-bold">🔍 Kết quả phân tích từ AI Coach</div>
-            <div class="card-body">
-                <pre style="white-space: pre-wrap; word-break: break-word;">@analysisResult</pre>
+        <div class="row mt-4">
+            <!-- Cột trái: Văn bản hợp đồng được tô đậm rủi ro -->
+            <div class="col-md-7">
+                <div class="card p-3 shadow-sm">
+                    <h5 class="card-title text-primary">📄 Văn bản hợp đồng (Đã quét rủi ro)</h5>
+                    <div class="p-3 border rounded bg-light" style="white-space: pre-wrap; max-height: 500px; overflow-y: auto;">
+                        @((MarkupString)GetHighlightedContractText())
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột phải: Gợi ý chiến lược đàm phán -->
+            <div class="col-md-5">
+                <h5 class="text-danger mb-3">💡 Gợi ý chiến lược đàm phán</h5>
+                @if (parsedContract.Clauses != null)
+                {
+                    @foreach (var clause in parsedContract.Clauses)
+                    {
+                        <div class="card mb-3 border-warning shadow-sm">
+                            <div class="card-header bg-warning text-dark font-weight-bold">
+                                @clause.ClauseTitle - <span class="badge bg-danger">@clause.Decision</span>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-1"><strong>Nội dung gốc:</strong> <em>"@clause.OriginalText"</em></p>
+                                <p class="mb-2"><strong>Căn cứ:</strong> @clause.LegalReference</p>
+
+                                @if (clause.Strategy != null)
+                                {
+                                    <hr class="my-2" />
+                                    <p class="text-danger mb-1"><strong>Lý do nên đàm phán:</strong> @clause.Strategy.WhyNegotiate</p>
+                                    <p class="text-success mb-1"><strong>Đề xuất sửa lại:</strong> @clause.Strategy.ProposedText</p>
+                                    <p class="text-info mb-0"><strong>Lời nói gợi ý với Sếp/HR:</strong> @clause.Strategy.TalkingPoints</p>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
             </div>
         </div>
     }
@@ -38,6 +72,28 @@
 @code {
     private bool isAnalyzing = false;
     private string analysisResult = "";
+    private string rawText = "";
+    private ContractAnalysisResult? parsedContract; 
+
+    private string GetHighlightedContractText()
+    {
+        if (string.IsNullOrEmpty(rawText) || parsedContract?.Clauses == null)
+            return rawText ?? "";
+
+        string highlightedText = rawText;
+
+        foreach (var clause in parsedContract.Clauses)
+        {
+            if (!string.IsNullOrWhiteSpace(clause.OriginalText) && highlightedText.Contains(clause.OriginalText))
+            {
+                // Tô đậm đoạn văn bản rủi ro bằng màu vàng
+                string replacement = $"<mark style='background-color: #ffeb3b; font-weight: bold; padding: 2px 4px; border-radius: 3px;'>{clause.OriginalText}</mark>";
+                highlightedText = highlightedText.Replace(clause.OriginalText, replacement);
+            }
+        }
+
+        return highlightedText;
+    }
 
     private async Task LoadFile(InputFileChangeEventArgs e)
     {
@@ -61,9 +117,9 @@
 
             if (!string.IsNullOrWhiteSpace(textContent))
             {
-                // 2. Gọi AI bóc tách dữ liệu hợp đồng (Khởi tạo biến parsedContract ở đây)
+                rawText = textContent; 
+                // 2. Gọi AI bóc tách dữ liệu hợp đồng
                 var parsedContract = await ParserAgent.ExtractDataAsync(textContent);
-
                 // 3. Cho LegalRuleEngine đánh giá các rủi ro
                 var ruleEngine = new LegalRuleEngine();
                 var assessment = ruleEngine.EvaluateContract(parsedContract);

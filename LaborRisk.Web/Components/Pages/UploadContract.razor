@@ -89,7 +89,7 @@
 </div>
 
 @code {
-   private bool isAnalyzing = false;
+    private bool isAnalyzing = false;
     private string rawText = "";
     private string errorMessage = "";
     private ContractAnalysisResult? parsedContract;
@@ -146,7 +146,7 @@
                 }
                 else
                 {
-                    errorMessage = "AI Parser không thể phân tích văn bản hoặc không trả về kết quả.";
+                    errorMessage = "";
                 }
             }
             else

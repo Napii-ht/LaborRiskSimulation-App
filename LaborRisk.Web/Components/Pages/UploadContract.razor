@@ -9,7 +9,7 @@
 
 <PageTitle>Phân tích Hợp đồng từ File</PageTitle>
 
-<div class="container my-4" style="max-width: 800px;">
+<div class="container my-4" style="max-width: 1200px;">
     <h3 class="fw-bold text-primary mb-3">Tải lên Hợp đồng (Word / PDF) để AI quét lỗi</h3>
 
     <div class="card p-4 shadow-sm mb-4 border-dashed text-center">
@@ -25,14 +25,23 @@
         </div>
     }
 
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            <strong>Thông báo lỗi:</strong> @errorMessage
+        </div>
+    }
+
     @if (parsedContract != null)
     {
         <div class="row mt-4">
             <!-- Cột trái: Văn bản hợp đồng được tô đậm rủi ro -->
             <div class="col-md-7">
-                <div class="card p-3 shadow-sm">
-                    <h5 class="card-title text-primary">📄 Văn bản hợp đồng (Đã quét rủi ro)</h5>
-                    <div class="p-3 border rounded bg-light" style="white-space: pre-wrap; max-height: 500px; overflow-y: auto;">
+                <div class="card p-3 shadow-sm h-100">
+                    <h5 class="card-title text-primary fw-bold border-bottom pb-2">
+                         Văn bản hợp đồng (Đã quét rủi ro)
+                    </h5>
+                    <div class="p-3 border rounded bg-light mt-2" style="white-space: pre-wrap; max-height: 600px; overflow-y: auto; font-family: sans-serif; line-height: 1.6;">
                         @((MarkupString)GetHighlightedContractText())
                     </div>
                 </div>
@@ -40,14 +49,18 @@
 
             <!-- Cột phải: Gợi ý chiến lược đàm phán -->
             <div class="col-md-5">
-                <h5 class="text-danger mb-3">💡 Gợi ý chiến lược đàm phán</h5>
-                @if (parsedContract.Clauses != null)
+                <h5 class="text-danger fw-bold mb-3 border-bottom pb-2">
+                    Gợi ý chiến lược đàm phán
+                </h5>
+
+                @if (parsedContract.Clauses != null && parsedContract.Clauses.Count > 0)
                 {
                     @foreach (var clause in parsedContract.Clauses)
                     {
                         <div class="card mb-3 border-warning shadow-sm">
-                            <div class="card-header bg-warning text-dark font-weight-bold">
-                                @clause.ClauseTitle - <span class="badge bg-danger">@clause.Decision</span>
+                            <div class="card-header bg-warning text-dark font-weight-bold d-flex justify-content-between align-items-center">
+                                <span> @clause.ClauseTitle</span>
+                                <span class="badge bg-danger">@clause.Decision</span>
                             </div>
                             <div class="card-body">
                                 <p class="mb-1"><strong>Nội dung gốc:</strong> <em>"@clause.OriginalText"</em></p>
@@ -58,11 +71,17 @@
                                     <hr class="my-2" />
                                     <p class="text-danger mb-1"><strong>Lý do nên đàm phán:</strong> @clause.Strategy.WhyNegotiate</p>
                                     <p class="text-success mb-1"><strong>Đề xuất sửa lại:</strong> @clause.Strategy.ProposedText</p>
-                                    <p class="text-info mb-0"><strong>Lời nói gợi ý với Sếp/HR:</strong> @clause.Strategy.TalkingPoints</p>
+                                    <p class="text-info mb-0"><strong>Lời nói gợi ý với Sếp/HR:</strong> "@clause.Strategy.TalkingPoints"</p>
                                 }
                             </div>
                         </div>
                     }
+                }
+                else
+                {
+                    <div class="alert alert-success">
+                        Hợp đồng an toàn! Không phát hiện điều khoản rủi ro nào.
+                    </div>
                 }
             </div>
         </div>
@@ -70,14 +89,13 @@
 </div>
 
 @code {
-    private bool isAnalyzing = false;
-    private string analysisResult = "";
+   private bool isAnalyzing = false;
     private string rawText = "";
-    private ContractAnalysisResult? parsedContract; 
-
+    private string errorMessage = "";
+    private ContractAnalysisResult? parsedContract;
     private string GetHighlightedContractText()
     {
-        if (string.IsNullOrEmpty(rawText) || parsedContract?.Clauses == null)
+        if (string.IsNullOrEmpty(rawText) || parsedContract?.Clauses== null)
             return rawText ?? "";
 
         string highlightedText = rawText;
@@ -101,12 +119,12 @@
         if (file == null) return;
 
         isAnalyzing = true;
-        analysisResult = "";
+        errorMessage = "";
+        parsedContract = null;
         StateHasChanged();
 
         try
         {
-            // Giới hạn file tối đa 10MB
             using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
             using var ms = new MemoryStream();
             await stream.CopyToAsync(ms);
@@ -117,27 +135,28 @@
 
             if (!string.IsNullOrWhiteSpace(textContent))
             {
-                rawText = textContent; 
-                // 2. Gọi AI bóc tách dữ liệu hợp đồng
-                var parsedContract = await ParserAgent.ExtractDataAsync(textContent);
-                // 3. Cho LegalRuleEngine đánh giá các rủi ro
-                var ruleEngine = new LegalRuleEngine();
-                var assessment = ruleEngine.EvaluateContract(parsedContract);
+                rawText = textContent;
 
-                // 4. Hiển thị kết quả rủi ro
-                if (assessment.Risks != null && assessment.Risks.Count > 0)
+                // 2. Gọi AI bóc tách dữ liệu hợp đồng
+                parsedContract = await ParserAgent.ExtractDataAsync(textContent);
+
+                if (parsedContract == null)
                 {
-                    analysisResult = string.Join("\n\n", assessment.Risks.Select(r => $" {r.Description}"));
+                    errorMessage = "AI Parser không thể phân tích văn bản hoặc không trả về kết quả.";
                 }
                 else
                 {
-                    analysisResult = "Hợp đồng không phát hiện điều khoản rủi ro nghiêm trọng theo Bộ luật Lao động 2019.";
+                    errorMessage = "AI Parser không thể phân tích văn bản hoặc không trả về kết quả.";
                 }
             }
             else
             {
-                analysisResult = "Không thể đọc được nội dung từ file đã tải lên.";
+                errorMessage = "Không thể đọc được nội dung từ file đã tải lên.";
             }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Lỗi xử lý: {ex.Message}";
         }
         finally
         {

@@ -39,6 +39,7 @@ namespace LaborRisk.Domain
         public string Description { get; set; } = string.Empty;
         public string LawReference { get; set; } = string.Empty;
         public int DeductedScore { get; set; }
+       
     }
 
     // 3. Kết quả đánh giá tổng hợp LRI

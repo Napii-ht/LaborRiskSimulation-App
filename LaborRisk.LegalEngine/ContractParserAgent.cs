@@ -21,7 +21,7 @@ namespace LaborRisk.LegalEngine
             _http = http;
         }
 
-        public async Task<ContractInput> ExtractDataAsync(string rawText, string apiKey = "")
+        public async Task<ContractAnalysisResult> ExtractDataAsync(string rawText, string apiKey = "")
         {
             if (string.IsNullOrWhiteSpace(rawText))
                 return FallbackMock(rawText);
@@ -92,7 +92,7 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
                     var match = System.Text.RegularExpressions.Regex.Match(aiText, @"\{.*\}", System.Text.RegularExpressions.RegexOptions.Singleline);
                     string json = match.Success ? match.Value : aiText;
 
-                    var result = JsonSerializer.Deserialize<ContractInput>(json, new JsonSerializerOptions
+                    var result = JsonSerializer.Deserialize<ContractAnalysisResult>(json, new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
                     });
@@ -108,19 +108,28 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
             return FallbackMock(rawText);
         }
 
-        private ContractInput FallbackMock(string text)
+        private ContractAnalysisResult FallbackMock(string rawtext)
         {
-            text ??= "";
-            return new ContractInput
+            rawtext ??= "";
+            return new ContractAnalysisResult
             {
-                ProbationDays = text.Contains("90 ngày") || text.Contains("03 tháng") ? 90 : 30,
-                BaseSalary = 15000000,
-                ProbationSalary = text.Contains("70%") ? 10500000 : 12750000,
-                PenaltyAmount = text.Contains("phạt tiền") ? 3000000 : 0,
-                OvertimeMultiplier = text.Contains("100%") ? 1.0 : 1.5,
-                NoticeDaysEmployee = text.Contains("60 ngày") ? 60 : 30,
-                HasVagueJobDescription = text.Contains("không giới hạn") || text.Contains("phân công khác"),
-                HasDegreeRetention = text.Contains("bản chính") || text.Contains("bằng gốc")
+                Clauses = new List<ClauseItem>
+        {
+            new ClauseItem
+            {
+                ClauseTitle = "Điều khoản thử việc",
+                OriginalText = rawtext.Contains("tháng") ? "Điều khoản thử việc trong hợp đồng" : "Thử việc",
+                Decision = "Cảnh báo",
+                RiskLevel = "Medium",
+                LegalReference = "Bộ luật Lao động 2019",
+                Strategy = new NegotiationStrategy
+                {
+                    WhyNegotiate = "Cần làm rõ thời gian và mức lương thử việc theo đúng luật định.",
+                    ProposedText = "Đề xuất thời gian thử việc không quá 60 ngày đối với công việc chuyên môn kỹ thuật.",
+                    TalkingPoints = "Em muốn xác nhận lại lịch trình và quyền lợi trong giai đoạn thử việc ạ."
+                }
+            }
+        }
             };
         }
     }

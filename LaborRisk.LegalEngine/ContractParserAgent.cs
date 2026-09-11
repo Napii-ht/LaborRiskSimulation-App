@@ -42,7 +42,7 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
   ""Clauses"": [
     {
       ""ClauseTitle"": ""Tên điều khoản (VD: Thử việc, Tiền lương, Bồi thường)"",
-      ""OriginalText"": ""Nội dung gốc trong hợp đồng"",
+      ""OriginalText"": ""Bắt buộc trích dẫn nguyên văn 100% từng câu từng từ trong hợp đồng gốc, không được tóm tắt hay sửa đổi dấu câu"",
       ""Decision"": ""DongY"",
       ""RiskLevel"": ""Thap"",
       ""LegalReference"": ""Điều 25 Bộ luật Lao động 2019"",

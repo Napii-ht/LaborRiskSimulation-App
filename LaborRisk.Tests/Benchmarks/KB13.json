@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB13",
+    "Category": "Thời giờ làm việc và tăng ca",
+    "ContractTitle": "Hợp đồng Lao động - Game Artist Junior",
+    "TargetPosition": "Junior Game Artist",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "Công ty áp dụng chế độ khoán task. Thời gian làm việc vượt quá 08 giờ/ngày do NLĐ chưa hoàn thành KPI được tính là thời gian tự nguyện, Công ty không thanh toán tiền OT.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB13_C1",
+            "ClauseTitle": "Làm thêm giờ tự nguyện do khoán KPI",
+            "OriginalText": "Thời gian làm việc vượt quá 08 giờ/ngày do NLĐ chưa hoàn thành KPI được tính là thời gian tự nguyện, Công ty không thanh toán tiền OT.",
+            "ExpectedDecision": "Violation",
+            "ExpectedRiskLevel": "High",
+            "ExpectedLegalReference": "Điều 98 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Vi phạm quy định làm thêm giờ. Ép khối lượng công việc buộc NLĐ làm quá giờ mà không trả lương OT là trái luật."
+        }
+    ]
+}

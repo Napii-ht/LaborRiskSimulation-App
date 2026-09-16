@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB19",
+    "Category": "Chấm dứt hợp đồng",
+    "ContractTitle": "Hợp đồng Lao động 24 tháng - Data Engineer",
+    "TargetPosition": "Junior Data Eng",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "NLĐ làm việc theo hợp đồng lao động xác định thời hạn 24 tháng có quyền đơn phương chấm dứt hợp đồng lao động nhưng phải báo cho NSDLĐ biết trước ít nhất 30 ngày.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB19_C1",
+            "ClauseTitle": "Thời hạn báo trước hợp đồng 24 tháng",
+            "OriginalText": "NLĐ làm việc theo hợp đồng lao động xác định thời hạn 24 tháng có quyền đơn phương chấm dứt hợp đồng lao động nhưng phải báo cho NSDLĐ biết trước ít nhất 30 ngày.",
+            "ExpectedDecision": "Valid",
+            "ExpectedRiskLevel": "Low",
+            "ExpectedLegalReference": "Khoản 1 Điều 35 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Hợp lệ. Thực hiện chính xác thời hạn báo trước 30 ngày đối với HĐLĐ từ 12-36 tháng."
+        }
+    ]
+}

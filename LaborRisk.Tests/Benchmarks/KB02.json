@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB02",
+    "Category": "Thời gian và lương thử việc",
+    "ContractTitle": "Hợp đồng Thử việc - Chuyên viên Bán hàng",
+    "TargetPosition": "Sales Executive",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "Thời gian thử việc là 02 tháng kể từ ngày nhận việc. Mức lương trong thời gian thử việc bằng 70% mức lương chính thức áp dụng cho vị trí Chuyên viên Bán hàng.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB02_C1",
+            "ClauseTitle": "Mức lương thử việc dưới quy định",
+            "OriginalText": "Mức lương trong thời gian thử việc bằng 70% mức lương chính thức áp dụng cho vị trí Chuyên viên Bán hàng.",
+            "ExpectedDecision": "Violation",
+            "ExpectedRiskLevel": "High",
+            "ExpectedLegalReference": "Điều 26 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Vi phạm mức lương thử việc tối thiểu. Tiền lương trong thời gian thử việc do hai bên thỏa thuận nhưng ít nhất phải bằng 85% mức lương của công việc đó."
+        }
+    ]
+}

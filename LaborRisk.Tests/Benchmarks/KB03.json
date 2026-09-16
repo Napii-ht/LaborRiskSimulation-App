@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB03",
+    "Category": "Thời gian và lương thử việc",
+    "ContractTitle": "Hợp đồng Thử việc - Kế toán viên Junior",
+    "TargetPosition": "Junior Accountant",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "Thời gian thử việc là 60 ngày kể từ ngày bắt đầu làm việc. Tiền lương trong thời gian thử việc bằng 85% mức lương chính thức của vị trí Kế toán viên.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB03_C1",
+            "ClauseTitle": "Thời gian và Lương thử việc",
+            "OriginalText": "Thời gian thử việc là 60 ngày kể từ ngày bắt đầu làm việc. Tiền lương trong thời gian thử việc bằng 85% mức lương chính thức của vị trí Kế toán viên.",
+            "ExpectedDecision": "Valid",
+            "ExpectedRiskLevel": "Low",
+            "ExpectedLegalReference": "Điều 25, Điều 26 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Hợp lệ. Thời gian thử việc không quá 60 ngày đối với trình độ Đại học và lương thử việc đạt tối thiểu 85%."
+        }
+    ]
+}

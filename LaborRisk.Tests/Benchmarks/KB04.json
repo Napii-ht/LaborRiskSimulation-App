@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB04",
+    "Category": "Thời gian và lương thử việc",
+    "ContractTitle": "Hợp đồng Thử việc - Kỹ thuật viên",
+    "TargetPosition": "Kỹ thuật viên",
+    "EducationLevelRequired": "Trung cấp",
+    "RawText": "Thời gian thử việc là 30 ngày kể từ ngày nhận việc. Mức lương thử việc bằng 90% mức lương chính thức của vị trí Kỹ thuật viên Trung cấp.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB04_C1",
+            "ClauseTitle": "Thời gian và Lương thử việc Trung cấp",
+            "OriginalText": "Thời gian thử việc là 30 ngày kể từ ngày nhận việc. Mức lương thử việc bằng 90% mức lương chính thức của vị trí Kỹ thuật viên Trung cấp.",
+            "ExpectedDecision": "Valid",
+            "ExpectedRiskLevel": "Low",
+            "ExpectedLegalReference": "Điều 25, Điều 26 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Hợp lệ. Thời gian thử việc không quá 30 ngày cho trình độ trung cấp và lương thử việc đạt trên 85%."
+        }
+    ]
+}

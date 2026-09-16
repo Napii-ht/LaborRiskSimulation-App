@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB06",
+    "Category": "Phạt vi phạm và chi phí đào tạo",
+    "ContractTitle": "Hợp đồng Thực tập - Telesales",
+    "TargetPosition": "Telesales Intern",
+    "EducationLevelRequired": "Cao đẳng",
+    "RawText": "NLĐ có nghĩa vụ chấp hành giờ giấc làm việc. Nếu đi trễ quá 03 lần/tháng, Công ty sẽ phạt trừ trực tiếp 10% vào tổng tiền lương thực nhận của tháng đó.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB06_C1",
+            "ClauseTitle": "Phạt trừ lương do đi trễ",
+            "OriginalText": "Nếu đi trễ quá 03 lần/tháng, Công ty sẽ phạt trừ trực tiếp 10% vào tổng tiền lương thực nhận của tháng đó.",
+            "ExpectedDecision": "Violation",
+            "ExpectedRiskLevel": "High",
+            "ExpectedLegalReference": "Điều 127 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Vi phạm nghiêm trọng. Nghiêm cấm hình thức dùng tiền hoặc cắt trừ lương thay cho xử lý kỷ luật lao động."
+        }
+    ]
+}

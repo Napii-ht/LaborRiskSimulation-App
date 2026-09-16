@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB09",
+    "Category": "Cam kết bảo mật và cạnh tranh",
+    "ContractTitle": "Hợp đồng Thực tập - Thiết kế",
+    "TargetPosition": "Design Intern",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "Công ty sẽ giữ lại tiền lương tháng cuối cùng của NLĐ làm khoản ký quỹ bảo mật. Khoản tiền này được hoàn trả sau 06 tháng kể từ khi chấm dứt HĐLĐ nếu không xảy ra rò rỉ dữ liệu.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB09_C1",
+            "ClauseTitle": "Giữ lương làm ký quỹ bảo mật",
+            "OriginalText": "Công ty sẽ giữ lại tiền lương tháng cuối cùng của NLĐ làm khoản ký quỹ bảo mật. Khoản tiền này được hoàn trả sau 06 tháng kể từ khi chấm dứt HĐLĐ nếu không xảy ra rò rỉ dữ liệu.",
+            "ExpectedDecision": "Violation",
+            "ExpectedRiskLevel": "High",
+            "ExpectedLegalReference": "Điều 48 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Vi phạm quy định thanh toán khi chấm dứt hợp đồng. Doanh nghiệp phải thanh toán đầy đủ các khoản tiền liên quan trong thời hạn 14 ngày làm việc."
+        }
+    ]
+}

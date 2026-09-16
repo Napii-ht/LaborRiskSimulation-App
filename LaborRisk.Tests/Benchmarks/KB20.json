@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB20",
+    "Category": "Chấm dứt hợp đồng",
+    "ContractTitle": "Hợp đồng Lao động - UI/UX Designer",
+    "TargetPosition": "UI/UX Designer",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "Hai bên thỏa thuận chấm dứt HĐLĐ. Công ty có trách nhiệm thanh toán đủ tiền lương, tiền phép năm chưa nghỉ và chốt sổ BHXH cho NLĐ trong vòng 14 ngày làm việc.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB20_C1",
+            "ClauseTitle": "Thủ tục chấm dứt hợp đồng thỏa thuận",
+            "OriginalText": "Hai bên thỏa thuận chấm dứt HĐLĐ. Công ty có trách nhiệm thanh toán đủ tiền lương, tiền phép năm chưa nghỉ và chốt sổ BHXH cho NLĐ trong vòng 14 ngày làm việc.",
+            "ExpectedDecision": "Valid",
+            "ExpectedRiskLevel": "Low",
+            "ExpectedLegalReference": "Khoản 3 Điều 34, Điều 48 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Hợp lệ. Thỏa thuận chấm dứt và thanh toán chế độ trong thời hạn 14 ngày làm việc đúng pháp luật."
+        }
+    ]
+}

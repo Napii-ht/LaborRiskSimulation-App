@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB01",
+    "Category": "Thời gian và lương thử việc",
+    "ContractTitle": "Hợp đồng Thử việc - Quản trị viên Tập sự",
+    "TargetPosition": "Management Trainee",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "Thời gian thử việc chính thức là 60 ngày. Sau khi kết thúc 60 ngày thử việc, NLĐ phải trải qua thêm 30 ngày đánh giá năng lực thực tế tại các phòng ban trước khi xem xét ký HĐLĐ.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB01_C1",
+            "ClauseTitle": "Thử việc vượt quá thời gian tối đa",
+            "OriginalText": "Thời gian thử việc chính thức là 60 ngày. Sau khi kết thúc 60 ngày thử việc, NLĐ phải trải qua thêm 30 ngày đánh giá năng lực thực tế tại các phòng ban trước khi xem xét ký HĐLĐ.",
+            "ExpectedDecision": "Violation",
+            "ExpectedRiskLevel": "High",
+            "ExpectedLegalReference": "Điều 25 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Vi phạm thời gian thử việc tối đa. Vị trí trình độ Đại học chỉ được thử việc tối đa 60 ngày. Quy định thêm 30 ngày đánh giá thực chất là lách luật để kéo dài thử việc thành 90 ngày."
+        }
+    ]
+}

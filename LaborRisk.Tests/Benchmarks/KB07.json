@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB07",
+    "Category": "Phạt vi phạm và chi phí đào tạo",
+    "ContractTitle": "Hợp đồng Lao động - Phân tích Dữ liệu",
+    "TargetPosition": "Data Analyst",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "Công ty cử NLĐ tham gia khóa học chứng chỉ dữ liệu trị giá 10 triệu VNĐ (có hóa đơn). NLĐ cam kết làm việc 12 tháng; nếu nghỉ sớm sẽ bồi thường trừ dần theo số tháng chưa làm đủ.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB07_C1",
+            "ClauseTitle": "Cam kết đào tạo nâng cao trình độ",
+            "OriginalText": "Công ty cử NLĐ tham gia khóa học chứng chỉ dữ liệu trị giá 10 triệu VNĐ (có hóa đơn). NLĐ cam kết làm việc 12 tháng; nếu nghỉ sớm sẽ bồi thường trừ dần theo số tháng chưa làm đủ.",
+            "ExpectedDecision": "Valid",
+            "ExpectedRiskLevel": "Low",
+            "ExpectedLegalReference": "Điều 62 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Hợp lệ. Có chi phí thực tế minh bạch, cam kết thời gian và phương thức hoàn trả khấu hao hợp lý."
+        }
+    ]
+}

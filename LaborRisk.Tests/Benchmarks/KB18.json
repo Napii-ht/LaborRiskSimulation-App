@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB18",
+    "Category": "Chấm dứt hợp đồng",
+    "ContractTitle": "Hợp đồng Lao động - Sales B2B",
+    "TargetPosition": "Sales B2B Fresher",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "Khi NLĐ nộp đơn xin nghỉ việc báo trước 30 ngày, Công ty có quyền đề nghị NLĐ ở lại hỗ trợ bàn giao thêm 15 ngày và hỗ trợ thêm 01 tháng tiền thưởng.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB18_C1",
+            "ClauseTitle": "Thỏa thuận gia hạn bàn giao nghỉ việc",
+            "OriginalText": "Khi NLĐ nộp đơn xin nghỉ việc báo trước 30 ngày, Công ty có quyền đề nghị NLĐ ở lại hỗ trợ bàn giao thêm 15 ngày và hỗ trợ thêm 01 tháng tiền thưởng.",
+            "ExpectedDecision": "Negotiate",
+            "ExpectedRiskLevel": "Low",
+            "ExpectedLegalReference": "Điều 38 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Thỏa thuận tự nguyện gia hạn ngày nghỉ. NLĐ có quyền chấp nhận hoặc từ chối tùy nhu cầu cá nhân."
+        }
+    ]
+}

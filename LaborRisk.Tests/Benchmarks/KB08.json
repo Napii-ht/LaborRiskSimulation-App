@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB08",
+    "Category": "Phạt vi phạm và chi phí đào tạo",
+    "ContractTitle": "Hợp đồng Lao động - Lập trình viên Fresher",
+    "TargetPosition": "Fresher Developer",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "NLĐ vi phạm nội quy lao động tùy tính chất sẽ bị xử lý kỷ luật theo các hình thức: Khiển trách, kéo dài thời hạn nâng lương không quá 06 tháng, hoặc sa thải.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB08_C1",
+            "ClauseTitle": "Hình thức xử lý kỷ luật",
+            "OriginalText": "NLĐ vi phạm nội quy lao động tùy tính chất sẽ bị xử lý kỷ luật theo các hình thức: Khiển trách, kéo dài thời hạn nâng lương không quá 06 tháng, hoặc sa thải.",
+            "ExpectedDecision": "Valid",
+            "ExpectedRiskLevel": "Low",
+            "ExpectedLegalReference": "Điều 124 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Hợp lệ. Áp dụng đúng các hình thức xử lý kỷ luật lao động được luật định."
+        }
+    ]
+}

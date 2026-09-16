@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB12",
+    "Category": "Cam kết bảo mật và cạnh tranh",
+    "ContractTitle": "Hợp đồng Lao động - Developer Junior",
+    "TargetPosition": "Junior Developer",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "NLĐ cam kết không làm việc cho 03 đối thủ cạnh tranh trực tiếp (Công ty A, B, C) trong 12 tháng sau khi nghỉ việc; Công ty hỗ trợ chi trả 50% lương/tháng trong thời gian này.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB12_C1",
+            "ClauseTitle": "Cam kết không cạnh tranh có đền bù",
+            "OriginalText": "NLĐ cam kết không làm việc cho 03 đối thủ cạnh tranh trực tiếp (Công ty A, B, C) trong 12 tháng sau khi nghỉ việc; Công ty hỗ trợ chi trả 50% lương/tháng trong thời gian này.",
+            "ExpectedDecision": "Valid",
+            "ExpectedRiskLevel": "Low",
+            "ExpectedLegalReference": "Khoản 2 Điều 21 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Hợp lệ. Thỏa thuận NCA có danh sách rõ ràng và có đền bù tài chính thỏa đáng."
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB14",
+    "Category": "Thời giờ làm việc và tăng ca",
+    "ContractTitle": "Hợp đồng Lao động - Social Media Executive",
+    "TargetPosition": "Social Media",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "Mức lương 12.000.000 VNĐ/tháng là mức lương trọn gói, đã bao gồm tiền làm thêm giờ khoán tối đa không quá 10 giờ làm thêm/tháng.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB14_C1",
+            "ClauseTitle": "Lương trọn gói bao gồm OT",
+            "OriginalText": "Mức lương 12.000.000 VNĐ/tháng là mức lương trọn gói, đã bao gồm tiền làm thêm giờ khoán tối đa không quá 10 giờ làm thêm/tháng.",
+            "ExpectedDecision": "Negotiate",
+            "ExpectedRiskLevel": "Medium",
+            "ExpectedLegalReference": "Điều 98 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Cần đàm phán bóc tách rõ lương căn bản và cơ chế trả tiền OT khi vượt quá số giờ khoán."
+        }
+    ]
+}

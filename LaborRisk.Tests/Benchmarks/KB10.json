@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB10",
+    "Category": "Cam kết bảo mật và cạnh tranh",
+    "ContractTitle": "Hợp đồng Lao động - Content Creator",
+    "TargetPosition": "Content Creator",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "Trong vòng 01 năm sau khi nghỉ việc, NLĐ không được làm việc cho bất kỳ doanh nghiệp nào có hoạt động kinh doanh thương mại điện tử trên phạm vi toàn quốc.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB10_C1",
+            "ClauseTitle": "Thỏa thuận không cạnh tranh rộng",
+            "OriginalText": "Trong vòng 01 năm sau khi nghỉ việc, NLĐ không được làm việc cho bất kỳ doanh nghiệp nào có hoạt động kinh doanh thương mại điện tử trên phạm vi toàn quốc.",
+            "ExpectedDecision": "Negotiate",
+            "ExpectedRiskLevel": "High",
+            "ExpectedLegalReference": "Khoản 2 Điều 21 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Cần đàm phán thu hẹp. Phạm vi cấm quá rộng hạn chế quyền tự do làm việc của NLĐ. Cần khoanh vùng cụ thể đối thủ trực tiếp."
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB16",
+    "Category": "Thời giờ làm việc và tăng ca",
+    "ContractTitle": "Hợp đồng Lao động - QA Tester",
+    "TargetPosition": "QA Tester",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "Trường hợp NLĐ được phân công làm việc vào ban đêm (từ 22 giờ đến 06 giờ sáng), NLĐ được trả thêm ít nhất 30% tiền lương tính theo đơn giá tiền lương ngày làm việc bình thường.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB16_C1",
+            "ClauseTitle": "Phụ cấp làm việc ban đêm",
+            "OriginalText": "Trường hợp NLĐ được phân công làm việc vào ban đêm (từ 22 giờ đến 06 giờ sáng), NLĐ được trả thêm ít nhất 30% tiền lương tính theo đơn giá tiền lương ngày làm việc bình thường.",
+            "ExpectedDecision": "Valid",
+            "ExpectedRiskLevel": "Low",
+            "ExpectedLegalReference": "Khoản 2 Điều 98 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Hợp lệ. Trả phụ cấp ca đêm tối thiểu 30% đúng pháp luật."
+        }
+    ]
+}

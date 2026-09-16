@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB15",
+    "Category": "Thời giờ làm việc và tăng ca",
+    "ContractTitle": "Hợp đồng Lao động - Nhân viên xuất nhập khẩu",
+    "TargetPosition": "Import/Export",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "Thời giờ làm việc là 40 giờ/tuần (Thứ 2 đến Thứ 6). Trường hợp làm thêm giờ, tiền lương làm thêm giờ ngày thường được tính 150%, ngày nghỉ hằng tuần được tính 200%.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB15_C1",
+            "ClauseTitle": "Tính tiền làm thêm giờ chuẩn",
+            "OriginalText": "Thời giờ làm việc là 40 giờ/tuần (Thứ 2 đến Thứ 6). Trường hợp làm thêm giờ, tiền lương làm thêm giờ ngày thường được tính 150%, ngày nghỉ hằng tuần được tính 200%.",
+            "ExpectedDecision": "Valid",
+            "ExpectedRiskLevel": "Low",
+            "ExpectedLegalReference": "Điều 98, Điều 105 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Hợp lệ. Tuân thủ đúng hệ số trả lương làm thêm giờ theo luật."
+        }
+    ]
+}

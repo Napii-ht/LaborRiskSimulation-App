@@ -6,7 +6,7 @@
 @inject DocumentReaderService DocService
 @rendermode InteractiveServer
 
-<PageTitle>Huấn luyện và cố vấn đàm phán Hợp đồng</PageTitle>
+<PageTitle>Rèn luyện và cố vấn đàm phán Hợp đồng</PageTitle>
 
 <div class="container my-4" style="max-width: 800px;">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -56,7 +56,7 @@
         {
             <div class="card shadow-sm mb-4 border-info">
                 <div class="card-header bg-info text-white fw-bold">
-                    🤖 Nhận xét & Chiến lược từ AI Coach
+                    Nhận xét và đưa ra lời khuyên từ AI Coach
                 </div>
                 <div class="card-body">
                     <!-- Đánh giá tổng quan -->
@@ -66,7 +66,6 @@
                         <strong>Căn cứ pháp lý:</strong> @currentScenario.Explanation
                     </div>
 
-                    <!-- Khung hiển thị Kịch bản đàm phán sâu nếu điều khoản cần đàm phán hoặc người dùng chọn đàm phán -->
                     @if (userChoice == "DamPhan" || currentScenario.IsRiskyClause)
                     {
                         <div class="card border-warning bg-light mb-3">

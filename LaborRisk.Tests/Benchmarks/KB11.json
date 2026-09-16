@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB11",
+    "Category": "Cam kết bảo mật và cạnh tranh",
+    "ContractTitle": "Hợp đồng Lao động - Chuyên viên HR",
+    "TargetPosition": "HR Executive",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "NLĐ có trách nhiệm bảo mật tuyệt đối dữ liệu nhân sự, bảng lương và thông tin kinh doanh của Công ty trong thời gian làm việc và sau khi chấm dứt hợp đồng lao động.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB11_C1",
+            "ClauseTitle": "Bảo mật thông tin kinh doanh",
+            "OriginalText": "NLĐ có trách nhiệm bảo mật tuyệt đối dữ liệu nhân sự, bảng lương và thông tin kinh doanh của Công ty trong thời gian làm việc và sau khi chấm dứt hợp đồng lao động.",
+            "ExpectedDecision": "Valid",
+            "ExpectedRiskLevel": "Low",
+            "ExpectedLegalReference": "Khoản 2 Điều 21 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Hợp lệ. Thỏa thuận bảo mật thông tin kinh doanh và nhân sự đúng chuẩn quy định."
+        }
+    ]
+}

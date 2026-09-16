@@ -1,0 +1,19 @@
+﻿{
+    "ScenarioId": "KB05",
+    "Category": "Phạt vi phạm và chi phí đào tạo",
+    "ContractTitle": "Hợp đồng Lao động - Trợ lý Kiểm toán",
+    "TargetPosition": "Audit Assistant",
+    "EducationLevelRequired": "Đại học",
+    "RawText": "Trong vòng 12 tháng kể từ khi làm việc, nếu NLĐ nghỉ việc thì phải bồi thường 20.000.000 VNĐ chi phí đào tạo hội nhập nội bộ do nhân sự cấp cao trực tiếp hướng dẫn.",
+    "GroundTruth": [
+        {
+            "ClauseId": "KB05_C1",
+            "ClauseTitle": "Bồi thường chi phí đào tạo nội bộ",
+            "OriginalText": "Trong vòng 12 tháng kể từ khi làm việc, nếu NLĐ nghỉ việc thì phải bồi thường 20.000.000 VNĐ chi phí đào tạo hội nhập nội bộ do nhân sự cấp cao trực tiếp hướng dẫn.",
+            "ExpectedDecision": "Violation",
+            "ExpectedRiskLevel": "High",
+            "ExpectedLegalReference": "Điều 62 Bộ luật Lao động 2019",
+            "KeyViolationReason": "Vi phạm quy định đào tạo. Đào tạo nội bộ không ký hợp đồng đào tạo riêng và không chứng minh được chứng từ chi phí thực tế thì không được yêu cầu bồi thường."
+        }
+    ]
+}

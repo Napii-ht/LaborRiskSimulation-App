@@ -23,6 +23,10 @@ namespace LaborRisk.LegalEngine
 
         public async Task<ContractAnalysisResult> ExtractDataAsync(string rawText, string apiKey = "")
         {
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                apiKey = Environment.GetEnvironmentVariable("GROQ_API_KEY");
+            }
             if (string.IsNullOrWhiteSpace(rawText))
                 return FallbackMock(rawText);
             string aiText = "";

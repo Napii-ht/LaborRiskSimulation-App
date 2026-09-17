@@ -31,7 +31,7 @@ namespace LaborRisk.LegalEngine
             {
                 if (!string.IsNullOrWhiteSpace(snippet))
                 {
-                    string span = $"<mark class='bg-warning text-dark p-1 rounded fw-bold'>{snippet}</mark>";
+                    string span = $"<mark class='bg-warning text-dark p-1 rounded'>{snippet}</mark>";
                     highlightedText = highlightedText.Replace(snippet, span);
                 }
             }

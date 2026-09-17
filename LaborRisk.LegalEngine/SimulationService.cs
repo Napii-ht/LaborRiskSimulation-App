@@ -67,7 +67,7 @@ namespace LaborRisk.LegalEngine
                 new RiskQuestionScenario
                 {
                     Id = 2,
-                    Category = "2. Lương & Phụ cấp",
+                    Category = "2. Lương và Phụ cấp",
                     ClauseText = "Mức lương thử việc bằng 70% mức lương chính thức.",
                     IsRiskyClause = true,
                     Explanation = "Theo Điều 28 BLLĐ, tiền lương thử việc phải ít nhất bằng 85% mức lương của công việc đó."
@@ -75,7 +75,7 @@ namespace LaborRisk.LegalEngine
                 new RiskQuestionScenario
                 {
                     Id = 3,
-                    Category = "3. Bảo mật & Cam kết không cạnh tranh (NDA)",
+                    Category = "3. Bảo mật và Cam kết không cạnh tranh (NDA)",
                     ClauseText = "Người lao động không được làm việc cho đối thủ cạnh tranh trong vòng 2 năm sau khi nghỉ việc, nếu vi phạm bồi thường 100 triệu.",
                     IsRiskyClause = true,
                     Explanation = "Điều khoản này hạn chế quyền tự do làm việc Hiến định. Cần đàm phán lại khoản phụ cấp bù đắp bảo mật."

@@ -108,18 +108,23 @@ namespace LaborRisk.Domain
 
     public class ClauseItem
     {
-        public string ClauseTitle { get; set; } = string.Empty;       // Tên điều khoản (VD: Thử việc, Lương, Bồi thường)
-        public string OriginalText { get; set; } = string.Empty;      // Nội dung gốc
-        public string Decision { get; set; } = string.Empty;          // "DongY", "TuChoi", hoặc "DamPhan"
-        public string RiskLevel { get; set; } = string.Empty;         // "Thap", "TrungBinh", "Cao"
-        public string LegalReference { get; set; } = string.Empty;     // Căn cứ pháp lý (Bộ luật Lao động 2019)
-        public NegotiationStrategy Strategy { get; set; } = new();   // Kịch bản đàm phán
+        public string ClauseTitle { get; set; } = string.Empty;       
+        public string OriginalText { get; set; } = string.Empty;      
+        public string Decision { get; set; } = string.Empty;          
+        public string RiskLevel { get; set; } = string.Empty;         
+        public string LegalReference { get; set; } = string.Empty;     
+        public NegotiationStrategy Strategy { get; set; } = new();   
     }
     public class NegotiationStrategy
     {
-        public string WhyNegotiate { get; set; } = string.Empty;      // Lý do bất lợi dù có thể không sai luật
-        public string ProposedText { get; set; } = string.Empty;      // Đề xuất câu từ hợp đồng mới
-        public string TalkingPoints { get; set; } = string.Empty;     // Lời khuyên/Gợi ý câu từ khi đàm phán
+        [JsonPropertyName("WhyNegotiate")]
+        public string WhyNegotiate { get; set; } = string.Empty;
+
+        [JsonPropertyName("ProposedText")]
+        public string ProposedText { get; set; } = string.Empty;
+
+        [JsonPropertyName("TalkingPoints")]
+        public string TalkingPoints { get; set; } = string.Empty;
     }
     public class HighlightedContractModel
     {

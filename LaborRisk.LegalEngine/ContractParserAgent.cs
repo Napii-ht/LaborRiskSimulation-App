@@ -25,16 +25,16 @@ namespace LaborRisk.LegalEngine
         {
             if (string.IsNullOrWhiteSpace(rawText))
                 return FallbackMock(rawText);
-
+            string aiText = "";
             try
             {
                 string prompt = @"
 Bạn là Chuyên gia Pháp lý và Cố vấn Đàm phán Hợp đồng Lao động theo Bộ luật Lao động Việt Nam 2019.
-Nhiệm vụ của bạn là phân tích hợp đồng được cung cấp và đưa ra cố vấn chiến lược cho từng điều khoản.
+Nhiệm vụ của bạn là phân tích hợp đồng được cung cấp và đưa ra cố vấn chiến lược mang tính thực chiến cao cho từng điều khoản.
 
 VỚI MỖI ĐIỀU KHOẢN, HÃY XÁC ĐỊNH 'Decision' THEO 3 HƯỚNG:
 1. 'DongY': Điều khoản chuẩn xác, công bằng, tuân thủ pháp luật.
-2. 'TuChoi': Điều khoản vi phạm điều cấm của pháp luật nghiêm trọng, không thể thỏa thuận.
+2. 'TuChoi': Điều khoản vi phạm điều cấm của pháp luật nghiêm trọng (như phạt tiền, giữ giấy tờ gốc), không thể thỏa thuận.
 3. 'DamPhan': Điều khoản KHÔNG sai luật hoàn toàn, nhưng chứa rủi ro, mập mờ hoặc gây bất lợi lớn cho người lao động.
 
 Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất (không kèm văn bản giải thích ngoài JSON) theo mẫu:
@@ -45,45 +45,47 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
       ""OriginalText"": ""Bắt buộc trích dẫn nguyên văn 100% từng câu từng từ trong hợp đồng gốc, không được tóm tắt hay sửa đổi dấu câu"",
       ""Decision"": ""DongY"",
       ""RiskLevel"": ""Thap"",
-      ""LegalReference"": ""Điều 25 Bộ luật Lao động 2019"",
+      ""LegalReference"": ""Căn cứ pháp lý cụ thể (VD: Khoản 2 Điều 124 Bộ luật Lao động 2019)"",
       ""Strategy"": {
-        ""WhyNegotiate"": ""Lý do chi tiết vì sao nên đàm phán lại"",
-        ""ProposedText"": ""Đoạn văn bản hợp đồng đề xuất sửa lại"",
-        ""TalkingPoints"": ""Gợi ý kịch bản lời nói khi thương lượng với sếp""
+        ""WhyNegotiate"": ""Phân tích sắc bén nguyên nhân gốc rễ vì sao điều khoản này bất lợi, bắt buộc phải chỉ rõ vi phạm hoặc điểm rủi ro đối với quyền lợi của người lao động"",
+        ""ProposedText"": ""Cung cấp câu chữ sửa đổi hoàn chỉnh, chuẩn mực pháp lý và cân bằng lợi ích để người lao động đưa trực tiếp cho nhà tuyển dụng"",
+        ""TalkingPoints"": ""Kịch bản giao tiếp gồm 2-3 ý ngắn gọn, sắc bén, có trích dẫn luật để ứng viên tự tin thuyết phục nhà tuyển dụng mà không sợ xung đột""
       }
     }
   ]
-}";
-
-                // 1. Cấu hình Payload cho Groq API (Qwen 2.5)
-                var payload = new
+}
+";
+                    // 1. Cấu hình Payload cho Groq API (giữ nguyên biến của anh)
+            var payload = new
                 {
-                    model = "qwen-2.5-32b",
-                    messages = new[]
-                    {
+                model = "qwen-2.5-32b",
+                messages = new[]
+                        {
                         new { role = "system", content = prompt },
                         new { role = "user", content = $"VĂN BẢN HỢP ĐỒNG:\n{rawText}" }
-                    },
-                    temperature = 0.2
-                };
+                        },
+                        temperature = 0.2
+                    };
 
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://api.groq.com/openai/v1/chat/completions");
+                    var request = new HttpRequestMessage(HttpMethod.Post, "https://api.groq.com/openai/v1/chat/completions");
 
-                // Dùng Key truyền vào hoặc Key mặc định
-                string activeKey = string.IsNullOrWhiteSpace(apiKey) ? GroqApiKey : apiKey;
-                request.Headers.Add("Authorization", $"Bearer {activeKey}");
-                request.Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+                    string activeKey = string.IsNullOrWhiteSpace(apiKey) ? GroqApiKey : apiKey;
+                    request.Headers.Add("Authorization", $"Bearer {activeKey}");
+                    request.Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
 
-                // 2. Gọi Cloud API
-                var response = await _http.SendAsync(request);
-
-                if (response.IsSuccessStatusCode)
-                {
+                    // 2. Gọi Cloud API
+                    var response = await _http.SendAsync(request);
                     string resContent = await response.Content.ReadAsStringAsync();
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        throw new Exception($"Groq API trả về mã lỗi HTTP {(int.Parse(response.StatusCode.ToString("D")))}: {resContent}");
+                    }
+
                     using var doc = JsonDocument.Parse(resContent);
 
-                    // Trích xuất nội dung trả về theo chuẩn OpenAI/Groq
-                    string aiText = doc.RootElement
+                    // Trích xuất nội dung trả về theo chuẩn OpenAI/Groq (giữ nguyên biến aiText)
+                    aiText = doc.RootElement
                         .GetProperty("choices")[0]
                         .GetProperty("message")
                         .GetProperty("content")
@@ -99,15 +101,13 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
 
                     if (result != null) return result;
                 }
-            }
-            catch (Exception)
-            {
-                // Tự động dùng Fallback nếu gặp sự cố mạng
-            }
+                catch (Exception ex)
+                {
+                    throw new Exception($"LỖI GỌI GROQ API: {ex.Message} | Nội dung gốc: {aiText}", ex);
+                }
 
-            return FallbackMock(rawText);
-        }
-
+                return FallbackMock(rawText);
+            }
         private ContractAnalysisResult FallbackMock(string rawtext)
         {
             rawtext ??= "";

@@ -98,15 +98,20 @@
         if (string.IsNullOrEmpty(rawText) || parsedContract?.Clauses== null)
             return rawText ?? "";
 
-        string highlightedText = rawText;
+        string highlightedText = rawText.Replace("\r", "");
 
         foreach (var clause in parsedContract.Clauses)
         {
-            if (!string.IsNullOrWhiteSpace(clause.OriginalText) && highlightedText.Contains(clause.OriginalText))
+            if (string.IsNullOrWhiteSpace(clause.OriginalText))
+            continue;
             {
-                // Tô đậm đoạn văn bản rủi ro bằng màu vàng
-                string replacement = $"<mark style='background-color: #ffeb3b; font-weight: bold; padding: 2px 4px; border-radius: 3px;'>{clause.OriginalText}</mark>";
-                highlightedText = highlightedText.Replace(clause.OriginalText, replacement);
+                string targetText = clause.OriginalText.Replace("\r", "").Trim();
+                if (highlightedText.Contains(targetText))
+                {
+                    // Tô đậm đoạn văn bản rủi ro bằng màu vàng
+                    string replacement = $"<mark style='background-color: #ffeb3b; font-weight: bold; padding: 2px 4px; border-radius: 3px;'>{clause.OriginalText}</mark>";
+                    highlightedText = highlightedText.Replace(clause.OriginalText, replacement);
+                }
             }
         }
 

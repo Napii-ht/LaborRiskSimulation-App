@@ -108,22 +108,28 @@ namespace LaborRisk.Domain
 
     public class ClauseItem
     {
-        public string ClauseTitle { get; set; } = string.Empty;       
-        public string OriginalText { get; set; } = string.Empty;      
-        public string Decision { get; set; } = string.Empty;          
-        public string RiskLevel { get; set; } = string.Empty;         
-        public string LegalReference { get; set; } = string.Empty;     
+        [JsonPropertyName("clauseTitle")]
+        public string ClauseTitle { get; set; } = string.Empty;
+        [JsonPropertyName("originalText")] 
+        public string OriginalText { get; set; } = string.Empty;
+        [JsonPropertyName("decision")]
+        public string Decision { get; set; } = string.Empty;
+        [JsonPropertyName("riskLevel")]
+        public string RiskLevel { get; set; } = string.Empty;
+        [JsonPropertyName("legalReference")]
+        public string LegalReference { get; set; } = string.Empty;
+        [JsonPropertyName("strategy")]
         public NegotiationStrategy Strategy { get; set; } = new();   
     }
     public class NegotiationStrategy
     {
-        [JsonPropertyName("WhyNegotiate")]
+        [JsonPropertyName("whyNegotiate")]
         public string WhyNegotiate { get; set; } = string.Empty;
 
-        [JsonPropertyName("ProposedText")]
+        [JsonPropertyName("proposedText")]
         public string ProposedText { get; set; } = string.Empty;
 
-        [JsonPropertyName("TalkingPoints")]
+        [JsonPropertyName("talkingPoints")]
         public string TalkingPoints { get; set; } = string.Empty;
     }
     public class HighlightedContractModel

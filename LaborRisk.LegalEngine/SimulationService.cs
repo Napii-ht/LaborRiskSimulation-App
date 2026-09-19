@@ -176,7 +176,7 @@ namespace LaborRisk.LegalEngine
                 },
                 new RiskQuestionScenario
                 {
-                    Id = 15,
+                    Id = 20,
                     Category = "5. Chấm dứt Hợp đồng lao động",
                     ClauseText = "Dù công ty liên tục trả lương chậm, nhân viên vẫn bắt buộc phải báo trước 30 ngày nếu muốn nghỉ việc.",
                     IsRiskyClause = true,

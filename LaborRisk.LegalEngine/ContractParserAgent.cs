@@ -108,15 +108,15 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
   ]
 }";
                 
-                // 1. Cấu hình Payload cho Groq API (giữ nguyên biến của anh)
+                // 1. Cấu hình Payload cho Groq API
                 var payload = new
                 {
                     model = "groq/compound-mini",
                     messages = new[]
-        {
-        new { role = "system", content = prompt },
-        new { role = "user", content = $"VĂN BẢN HỢP ĐỒNG:\n{rawText}" }
-    },
+                    {
+                        new { role = "system", content = prompt },
+                        new { role = "user", content = $"VĂN BẢN HỢP ĐỒNG:\n{rawText}" }
+                    },
                     response_format = new { type = "json_object" },
                     temperature = 0.2,
                     max_tokens = 8192

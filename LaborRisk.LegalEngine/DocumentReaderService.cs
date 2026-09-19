@@ -50,10 +50,16 @@ namespace LaborRisk.LegalEngine
             {
                 foreach (var p in body.Descendants<Paragraph>())
                 {
-                    sb.AppendLine(p.InnerText);
+                    string text = p.InnerText?.Trim();
+                    if (!string.IsNullOrEmpty(text))
+                    {
+                        sb.Append(text + " ");
+                    }
                 }
             }
-            return sb.ToString();
+            string rawText = sb.ToString();
+            rawText = System.Text.RegularExpressions.Regex.Replace(rawText, @"[ \t]+", " ");
+            return rawText.Trim();
         }
 
         private string ReadPdfFromStream(Stream stream)
@@ -65,9 +71,15 @@ namespace LaborRisk.LegalEngine
             using var pdf = PdfDocument.Open(ms);
             foreach (var page in pdf.GetPages())
             {
-                sb.AppendLine(page.Text);
+                string pageText = page.Text?.Trim();
+                if (!string.IsNullOrEmpty(pageText))
+                {
+                    sb.Append(pageText + " ");
+                }
             }
-            return sb.ToString();
+            string rawText = sb.ToString();
+            rawText = System.Text.RegularExpressions.Regex.Replace(rawText, @"[ \t\r\n]+", " ");
+            return rawText.Trim();
         }
 
         private string ReadTxtFromStream(Stream stream)

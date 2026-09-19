@@ -45,16 +45,14 @@ VỚI MỖI ĐIỀU KHOẢN, HÃY XÁC ĐỊNH 'decision' THEO 3 HƯỚNG:
 3. 'DamPhan': Điều khoản KHÔNG sai luật hoàn toàn, nhưng chứa rủi ro, mập mờ hoặc gây bất lợi lớn cho người lao động.
 
 Yêu cầu quét bắt buộc:
-- BẮT BUỘC trích xuất TẤT CẢ các điều khoản rủi ro/vi phạm có trong hợp đồng (Thử việc, Lương, OT, Nghỉ việc, Phạt vi phạm...). KHÔNG ĐƯỢC bỏ sót bất kỳ điều khoản nào.
-- 'originalText': TRÍCH NGUYÊN VĂN chính xác 100% câu chứa rủi ro từ hợp đồng gốc để hệ thống tô đậm.
-- 'talkingPoints': ĐÓNG VAI LÀ ỨNG VIÊN NÓI CHUYỆN TRỰC TIẾP VỚI SẾP/HR (xưng 'em', gọi 'anh/chị').
+- BẮT BUỘC trích xuất TẤT CẢ các điều khoản rủi ro/vi phạm có trong hợp đồng (Thử việc, Lương, OT, Nghỉ việc, Phạt vi phạm...) (không giới hạn số lượng). KHÔNG ĐƯỢC bỏ sót bất kỳ điều khoản nào.
+- Các trường trong 'strategy' cần viết súc tích, ngắn gọn (tối đa 2 câu) để tập trung vào bản chất pháp lý.
 
 QUY TẮC BẮT BUỘC CHO 'originalText':
 - BẮT BUỘC phải TRÍCH NGUYÊN VĂN chính xác 100% câu chứa rủi ro từ hợp đồng gốc.
 - TUYỆT ĐỐI KHÔNG tự viết lại, KHÔNG tóm tắt, KHÔNG thêm bớt ký tự để hệ thống tô đậm được trên UI.
 
 Quy tắc cho 'talkingPoints': Đóng vai là ứng viên nói chuyện trực tiếp với sếp/HR (xưng 'em', gọi 'anh/chị'). 
-- KHÔNG viết kiểu hướng dẫn (""Nhấn mạnh quyền..."", ""Đề nghị sửa..."").
 - PHẢI viết nguyên văn câu thoại nói ra miệng (VD: """"Dạ anh/chị, ở phần làm thêm giờ em thấy theo Luật Lao động thì tiền OT sẽ tính riêng. Mình có thể điều chỉnh lại khoản này để đúng quy định được không?"""")
 
 Quy tắc căn cứ pháp lý bắt buộc (Bộ Luật lao động 2019):
@@ -71,7 +69,7 @@ NHÓM 2: PHẠT VI PHẠM VÀ BỒI THƯỜNG CHI PHÍ ĐÀO TẠO
 - Chi phí đào tạo (Khoản 3 Điều 62): Chi phí đào tạo bao gồm các khoản chi có chứng từ hợp lệ theo quy định tại Khoản 3 Điều 62, bao gồm các khoản được luật liệt kê.
 - ĐÁNH GIÁ và ĐÀM PHÁN CHI PHÍ ĐÀO TẠO:
   + Nếu hợp đồng yêu cầu hoàn trả các khoản không chứng minh được là chi phí đào tạo hợp lệ -> Đánh giá 'DamPhan'.
-  + Nếu hợp đồng quy định mức bồi hoàn/phạt cao hơn chi phí đào tạo thực tế -> Đánh giá 'DamPhan' (hoặc 'CanXemXet'), yêu cầu doanh nghiệp giải trình căn cứ pháp lý và cơ sở tính toán; KHÔNG tự động 'TuChoi' chỉ dựa trên Khoản 3 Điều 62.
+  + Nếu hợp đồng quy định mức bồi hoàn/phạt cao hơn chi phí đào tạo thực tế -> Đánh giá 'DamPhan', yêu cầu doanh nghiệp giải trình căn cứ pháp lý và cơ sở tính toán; KHÔNG tự động 'TuChoi' chỉ dựa trên Khoản 3 Điều 62.
   + Hướng xử lý: Yêu cầu doanh nghiệp giải trình căn cứ tính toán và cung cấp đầy đủ chứng từ hợp lệ.
   + Lưu ý: Đề xuất giảm mức hoàn trả theo thời gian đã làm việc là đề xuất đàm phán, KHÔNG PHẢI công thức bắt buộc tại Khoản 3 Điều 62.
 
@@ -91,10 +89,6 @@ NHÓM 5: ĐIỀU KIỆN ĐƠN PHƯƠNG CHẤM DỨT HỢP ĐỒNG
 - NLĐ đơn phương chấm dứt (Báo trước 45 ngày HĐ vô thời hạn; 30 ngày HĐ 12-36 tháng; 3 ngày HĐ <12 tháng): Điểm a, b, c Khoản 1 Điều 35.
 - NLĐ đơn phương chấm dứt KHÔNG cần báo trước (khi bị chậm lương, ngược đãi, vi phạm điều kiện làm việc): Khoản 2 Điều 35.
 - NSDLĐ đơn phương chấm dứt (phải thuộc các trường hợp luật định và tuân thủ thời hạn báo trước): Khoản 1 và Khoản 2 Điều 36.
-
-YÊU CẦU PHÂN TÍCH:
-- Quét và trích xuất TẤT CẢ các điều khoản rủi ro có trong hợp đồng (không giới hạn số lượng).
-- Các trường trong 'strategy' cần viết súc tích, ngắn gọn (tối đa 2 câu) để tập trung vào bản chất pháp lý.
 
 Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất (không kèm văn bản giải thích ngoài JSON) theo mẫu chính xác sau:
 {
@@ -125,7 +119,7 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
     },
                     response_format = new { type = "json_object" },
                     temperature = 0.2,
-                    max_tokens = 4096
+                    max_tokens = 8192
                 };
 
                 var request = new HttpRequestMessage(HttpMethod.Post, "https://api.groq.com/openai/v1/chat/completions");
@@ -151,7 +145,15 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
                     .GetProperty("content")
                     .GetString() ?? "";
 
-                string json = aiText.Replace("```json", "").Replace("```", "").Trim();
+                string json = aiText.Trim();
+                if (json.StartsWith("```json"))
+                {
+                    json = json.Replace("```json", "").Replace("```", "").Trim();
+                }
+                else if (json.StartsWith("```"))
+                {
+                    json = json.Replace("```", "").Trim();
+                }
 
                 int firstBrace = json.IndexOf('{');
                 if (firstBrace >= 0)
@@ -160,19 +162,21 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
                 }
                 else
                 {
-                    throw new Exception($"Không tìm thấy ký tự mở đầu JSON '{{' trong phản hồi của AI: {aiText}");
+                    json = "{\"summary\": \"Hệ thống đang bận hoặc phản hồi từ AI không theo chuẩn JSON. Vui lòng thử lại.\", \"clauses\": []}";
                 }
 
                 if (!json.EndsWith("}"))
                 {
-                    int lastBrace = json.LastIndexOf('}');
-                    if (lastBrace > 0)
+                    json = json.TrimEnd(',', ' ', '\n', '\r');
+
+                    if (json.Contains("clauses") && !json.EndsWith("]"))
                     {
-                        json = json.Substring(0, lastBrace + 1) + "]}";
+                        json += "]";
                     }
-                    else
+
+                    if (!json.EndsWith("}"))
                     {
-                        json += "}]}";
+                        json += "}";
                     }
                 }
                 var result = JsonSerializer.Deserialize<ContractAnalysisResult>(json, new JsonSerializerOptions

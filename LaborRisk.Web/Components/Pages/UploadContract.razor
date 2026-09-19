@@ -21,7 +21,7 @@
     {
         <div class="alert alert-info d-flex align-items-center">
             <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-            <span>AI Qwen2.5 đang đọc file và đối chiếu Bộ luật Lao động 2019...</span>
+            <span>AI đang đọc file và đối chiếu Bộ luật Lao động 2019...</span>
         </div>
     }
 
@@ -35,13 +35,18 @@
     @if (parsedContract != null)
     {
         <div class="row mt-4">
-            <!-- Cột trái: Văn bản hợp đồng được tô đậm rủi ro -->
+            <!-- Cột trái: -->
             <div class="col-md-7">
                 <div class="card p-3 shadow-sm h-100">
                     <h5 class="card-title text-primary fw-bold border-bottom pb-2">
                          Văn bản hợp đồng (Đã quét rủi ro)
                     </h5>
-                    <div class="p-3 border rounded bg-light mt-2" style="white-space: pre-wrap; max-height: 600px; overflow-y: auto; font-family: sans-serif; line-height: 1.6;">
+                    <div class="p-3 border rounded bg-light mt-2" 
+                        style="white-space: pre-wrap; 
+                                max-height: 600px; 
+                                overflow-y: auto; 
+                                font-family: sans-serif; 
+                                line-height: 1.6;">
                         @((MarkupString)GetHighlightedContractText())
                     </div>
                 </div>
@@ -98,15 +103,20 @@
         if (string.IsNullOrEmpty(rawText) || parsedContract?.Clauses== null)
             return rawText ?? "";
 
-        string highlightedText = rawText;
+        string highlightedText = rawText.Replace("\r", "");
 
         foreach (var clause in parsedContract.Clauses)
         {
-            if (!string.IsNullOrWhiteSpace(clause.OriginalText) && highlightedText.Contains(clause.OriginalText))
+            if (string.IsNullOrWhiteSpace(clause.OriginalText))
+            continue;
             {
-                // Tô đậm đoạn văn bản rủi ro bằng màu vàng
-                string replacement = $"<mark style='background-color: #ffeb3b; font-weight: bold; padding: 2px 4px; border-radius: 3px;'>{clause.OriginalText}</mark>";
-                highlightedText = highlightedText.Replace(clause.OriginalText, replacement);
+                string targetText = clause.OriginalText.Replace("\r", "").Trim();
+                if (highlightedText.Contains(targetText))
+                {
+                    // Tô đậm đoạn văn bản rủi ro bằng màu vàng
+                    string replacement = $"<mark style='background-color: #ffeb3b; font-weight: bold; padding: 2px 4px; border-radius: 3px;'>{clause.OriginalText}</mark>";
+                    highlightedText = highlightedText.Replace(clause.OriginalText, replacement);
+                }
             }
         }
 
@@ -142,7 +152,7 @@
 
                 if (parsedContract == null)
                 {
-                    errorMessage = "AI Parser không thể phân tích văn bản hoặc không trả về kết quả.";
+                    errorMessage = "AI không thể phân tích văn bản hoặc không trả về kết quả.";
                 }
                 else
                 {

@@ -34,11 +34,10 @@
                         <span>"@currentScenario.ClauseText"</span>
                     }
                 </blockquote>
-
                 <p class="fw-bold mt-3">Bạn quyết định xử lý điều khoản này như thế nào?</p>
 
                 <!-- Bộ 3 nút quyết định chiến lược -->
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 mb-3">
                     <button type="button" class="btn btn-danger flex-fill py-2 fw-bold" @onclick='() => HandleUserChoice("TuChoi")' disabled="@isProcessing">
                         Từ chối
                     </button>
@@ -49,6 +48,16 @@
                         Đồng ý
                     </button>
                 </div>
+                @if (userChoice == "DamPhan" && !showFeedback)
+                {
+                    <div class="card p-3 bg-light border-warning mb-3">
+                        <label class="form-label fw-bold text-dark">Nhập câu đàm phán của bạn với HR (Xưng em - anh/chị, giữ hòa khí):</label>
+                        <textarea @bind="userInputText" class="form-control mb-2" rows="3" placeholder="Ví dụ: Dạ em chào anh/chị, em thấy thời gian thử việc..."></textarea>
+                        <button type="button" class="btn btn-primary fw-bold" @onclick="SubmitNegotiation" disabled="@isProcessing">
+                            Gửi câu đàm phán cho AI nhận xét
+                        </button>
+                    </div>
+                }
             </div>
         </div>
 
@@ -56,7 +65,7 @@
         {
             <div class="card shadow-sm mb-4 border-info">
                 <div class="card-header bg-info text-white fw-bold">
-                    Nhận xét và đưa ra lời khuyên từ AI Coach
+                    Nhận xét và đưa ra lời khuyên từ AI
                 </div>
                 <div class="card-body">
                     <!-- Đánh giá tổng quan -->
@@ -65,35 +74,6 @@
                     <div class="alert alert-secondary mt-2 mb-3 small">
                         <strong>Căn cứ pháp lý:</strong> @currentScenario.Explanation
                     </div>
-
-                    @if (userChoice == "DamPhan" || currentScenario.IsRiskyClause)
-                    {
-                        <div class="card border-warning bg-light mb-3">
-                            <div class="card-body">
-                                <h6 class="fw-bold text-warning-emphasis mb-3">💡 KHUNG CỐ VẤN ĐÀM PHÁN CHI TIẾT:</h6>
-
-                                <div class="mb-2">
-                                    <strong class="text-danger">1. Phân tích điểm thiệt thòi:</strong>
-                                    <p class="mb-1 small text-dark">Điều khoản này mập mờ hoặc tạo lợi thế đơn phương cho phía tuyển dụng. Nếu không sửa, bạn sẽ chịu ràng buộc rủi ro khi có tranh chấp.</p>
-                                </div>
-
-                                <div class="mb-2">
-                                    <strong class="text-success">2. Văn bản đề xuất sửa lại (Drafting):</strong>
-                                    <div class="p-2 bg-white border border-success rounded small text-monospace">
-                                        <code>"Hai bên thỏa thuận điều chỉnh nội dung điều khoản thành: Cung cấp điều kiện làm việc minh bạch, quyền lợi và trách nhiệm được quy định rõ ràng theo quy định của Bộ luật Lao động."</code>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <strong class="text-primary">3. Kịch bản thương lượng (Talking Points với HR/Sếp):</strong>
-                                    <p class="p-2 bg-white border border-info rounded small mb-0">
-                                        <em>"Em rất mong muốn đồng hành lâu dài cùng công ty. Tuy nhiên ở điều khoản này, em đề xuất mình làm rõ hơn các tiêu chí để hai bên dễ làm việc và tránh hiểu lầm về sau ạ."</em>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    }
-
                     <button type="button" class="btn btn-primary w-100 py-2 fw-bold" @onclick="NextQuestion">
                         Câu tiếp theo ➔
                     </button>
@@ -138,9 +118,11 @@
     private int totalScore = 0;
     private bool isProcessing = false;
     private bool showFeedback = false;
+    private string userInputText = "";
     private string aiFeedback = "";
     private string userChoice = "";
     private string highlightedClauseHtml = "";
+    private NegotiationStrategy currentStrategy = new NegotiationStrategy();
 
     protected override void OnInitialized()
     {
@@ -150,7 +132,6 @@
 
     private async Task HandleUserChoice(string choice)
     {
-        isProcessing = true;
         userChoice = choice;
         var currentScenario = scenarios[currentIndex];
 
@@ -171,25 +152,48 @@
         {
             totalScore += currentScenario.Points;
         }
-
-        bool userAccepted = (choice == "DongY");
-
-        aiFeedback = await SimService.EvaluateDecisionWithAIAsync(
+        if (choice == "DamPhan")
+        {
+            showFeedback = false; // Chưa hiện kết quả vội để chờ người dùng gõ câu thoại
+            StateHasChanged();
+            return;
+        }
+        isProcessing = true;
+        var result = await SimService.ProcessUserNegotiationAsync(
             currentScenario.ClauseText,
-            userAccepted,
-            currentScenario.IsRiskyClause
+            currentScenario.Explanation,
+            choice == "DongY" ? "Đồng ý ký kết" : "Từ chối điều khoản này"
         );
-
+        aiFeedback = result.CoachAdvice;
         showFeedback = true;
         isProcessing = false;
         StateHasChanged();
     }
+    private async Task SubmitNegotiation()
+    {
+        if (string.IsNullOrWhiteSpace(userInputText)) return;
 
+        isProcessing = true;
+        var currentScenario = scenarios[currentIndex];
+
+        // Gọi AI chấm điểm và nhận xét câu đàm phán tự do (xưng em - anh/chị, giữ hòa khí)
+        var result = await SimService.ProcessUserNegotiationAsync(
+            currentScenario.ClauseText,
+            currentScenario.Explanation,
+            userInputText
+        );
+
+        aiFeedback = result.CoachAdvice;
+        showFeedback = true;
+        isProcessing = false;
+        StateHasChanged();
+    }
     private void NextQuestion()
     {
         showFeedback = false;
         aiFeedback = "";
         userChoice = "";
+        userInputText = "";
         currentIndex++;
         UpdateHighlightedClause();
         StateHasChanged();
@@ -201,6 +205,7 @@
         totalScore = 0;
         aiFeedback = "";
         userChoice = "";
+        userInputText = "";
         showFeedback = false;
     }
     private void UpdateHighlightedClause()

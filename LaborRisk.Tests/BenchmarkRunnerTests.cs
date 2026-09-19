@@ -18,7 +18,7 @@ namespace LaborRisk.Tests.Benchmarks
         {
             // Khởi tạo Agent trực tiếp từ project LaborRisk.LegalEngine 
             var httpClient = new HttpClient();
-            _parserAgent = new ContractParserAgent(httpClient);
+            _parserAgent = new ContractParserAgent(httpClient,null);
         }
 
         [Theory]

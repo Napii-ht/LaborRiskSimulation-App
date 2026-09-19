@@ -5,7 +5,7 @@ using LaborRisk.Web.Components;
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Đăng ký HttpClient để gọi Ollama
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient<ContractParserAgent>();
 
 // 2. Đăng ký các dịch vụ nghiệp vụ
 builder.Services.AddScoped<DocumentReaderService>();

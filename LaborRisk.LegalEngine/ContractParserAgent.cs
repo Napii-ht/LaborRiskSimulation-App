@@ -34,6 +34,7 @@ namespace LaborRisk.LegalEngine
             }
             if (string.IsNullOrWhiteSpace(rawText))
                 return FallbackMock(rawText);
+            rawText = System.Text.RegularExpressions.Regex.Replace(rawText, @"\s+", " ").Trim();
             string aiText = "";
             try
             {
@@ -45,7 +46,7 @@ VỚI MỖI ĐIỀU KHOẢN, HÃY XÁC ĐỊNH 'decision' THEO 3 HƯỚNG:
 1. 'DongY': Điều khoản chuẩn xác, công bằng, tuân thủ pháp luật.
 2. 'TuChoi': Điều khoản vi phạm điều cấm của pháp luật nghiêm trọng (như phạt tiền, giữ giấy tờ gốc), không thể thỏa thuận.
 3. 'DamPhan': Điều khoản KHÔNG sai luật hoàn toàn, nhưng chứa rủi ro, mập mờ hoặc gây bất lợi lớn cho người lao động.
-
+- CỰC KỲ QUAN TRỌNG: Phải đảm bảo đóng đủ tất cả các dấu ngoặc nhọn {} và ngoặc vuông [] của JSON. TUYỆT ĐỐI KHÔNG để JSON bị cắt cụt giữa chừng.
 Yêu cầu quét bắt buộc:
 - BẮT BUỘC trích xuất TẤT CẢ các điều khoản rủi ro/vi phạm có trong hợp đồng (Thử việc, Lương, OT, Nghỉ việc, Phạt vi phạm...) (không giới hạn số lượng). KHÔNG ĐƯỢC bỏ sót bất kỳ điều khoản nào.
 - Các trường trong 'strategy' cần viết súc tích, ngắn gọn (tối đa 2 câu) để tập trung vào bản chất pháp lý.
@@ -104,7 +105,7 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
       ""strategy"": {
         ""whyNegotiate"": ""Lý do chi tiết vì sao điều khoản này bất lợi"",
         ""proposedText"": ""Đề xuất lại câu từ mới chuẩn pháp luật"",
-        ""talkingPoints"": ""Lời khuyên ngắn gọn để nói chuyện trực tiếp với HR/Sếp nhưng vẫn giữ thái độ đúng mực để được chấp nhận lời đàm phán""
+        ""talkingPoints"": ""Lời khuyên ngắn gọn để nói chuyện trực tiếp với HR/Sếp""
       }
     }
   ]
@@ -121,7 +122,7 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
                     },
                     response_format = new { type = "json_object" },
                     temperature = 0.2,
-                    max_tokens = 8192
+                    max_tokens = 2048
                 };
 
                 var request = new HttpRequestMessage(HttpMethod.Post, "https://api.groq.com/openai/v1/chat/completions");
@@ -169,16 +170,14 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
 
                 if (!json.EndsWith("}"))
                 {
-                    json = json.TrimEnd(',', ' ', '\n', '\r');
-
-                    if (json.Contains("clauses") && !json.EndsWith("]"))
+                    int lastBrace = json.LastIndexOf('}');
+                    if (lastBrace > 0)
                     {
-                        json += "]";
+                        json = json.Substring(0, lastBrace + 1);
                     }
-
-                    if (!json.EndsWith("}"))
+                    else
                     {
-                        json += "}";
+                        json += "]}";
                     }
                 }
                 var result = JsonSerializer.Deserialize<ContractAnalysisResult>(json, new JsonSerializerOptions

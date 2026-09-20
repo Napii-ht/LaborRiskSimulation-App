@@ -25,10 +25,12 @@ namespace LaborRisk.LegalEngine
         }
         public async Task<ContractAnalysisResult> ExtractDataAsync(string rawText, string apiKey = "")
         {
+            string activeKey = apiKey;
             if (string.IsNullOrEmpty(apiKey))
             {
-                apiKey = _configuration["GroqApiKey"];
-                apiKey = _configuration["GroqApiKey"] ?? Environment.GetEnvironmentVariable("GROQ_API_KEY");
+                apiKey = Environment.GetEnvironmentVariable("GROQ_API_KEY")
+             ?? _configuration["GroqApiKey"]
+             ?? string.Empty;
             }
             if (string.IsNullOrWhiteSpace(rawText))
                 return FallbackMock(rawText);
@@ -124,7 +126,7 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
 
                 var request = new HttpRequestMessage(HttpMethod.Post, "https://api.groq.com/openai/v1/chat/completions");
 
-                string activeKey = !string.IsNullOrWhiteSpace(apiKey) ? apiKey : _configuration["GroqApiKey"]; request.Headers.Add("Authorization", $"Bearer {activeKey}");
+                activeKey = !string.IsNullOrWhiteSpace(apiKey) ? apiKey : _configuration["GroqApiKey"]; request.Headers.Add("Authorization", $"Bearer {activeKey}");
                 request.Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
 
                 // 2. Gọi Cloud API

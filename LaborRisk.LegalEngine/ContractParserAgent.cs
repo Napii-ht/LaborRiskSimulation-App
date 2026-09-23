@@ -36,8 +36,7 @@ namespace LaborRisk.LegalEngine
             try
             {
                 string prompt = @"
-Bạn là Chuyên gia Pháp lý và Cố vấn Đàm phán Hợp đồng Lao động theo Bộ luật Lao động Việt Nam 2019.
-Nhiệm vụ của bạn là phân tích hợp đồng được cung cấp và đưa ra cố vấn chiến lược mang tính thực chiến cao cho từng điều khoản.
+Bạn là chuyên gia phân tích hợp đồng lao động Việt Nam theo Bộ luật Lao động 2019.
 
 VỚI MỖI ĐIỀU KHOẢN, HÃY XÁC ĐỊNH 'decision' THEO 3 HƯỚNG:
 1. 'DongY': Điều khoản chuẩn xác, công bằng, tuân thủ pháp luật.
@@ -46,7 +45,7 @@ VỚI MỖI ĐIỀU KHOẢN, HÃY XÁC ĐỊNH 'decision' THEO 3 HƯỚNG:
 - CỰC KỲ QUAN TRỌNG: Phải đảm bảo đóng đủ tất cả các dấu ngoặc nhọn {} và ngoặc vuông [] của JSON. TUYỆT ĐỐI KHÔNG để JSON bị cắt cụt giữa chừng.
 
 Quy tắt trình bày dữ liệu:
-- 'originalText': BẮT BUỘC trích nguyên văn chính xác 100% câu chứa rủi ro từ hợp đồng gốc, không tự viết lại.
+- 'originalText': Trích nguyên văn toàn bộ điều khoản rủi ro, không rút gọn.
 - 'strategy': Viết súc tích, ngắn gọn (tối đa 2 câu).
 - 'talkingPoints': Viết nguyên văn câu thoại của ứng viên nói với HR/Sếp (xưng 'em', gọi 'anh/chị').
 
@@ -181,7 +180,8 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
             }
             catch (Exception ex)
             {
-                throw new Exception($"[LỖI GROQ API]: {activeKey} {ex.Message}");
+                return FallbackMock(rawText);
+
             }
             return FallbackMock(rawText);
         }

@@ -32,8 +32,8 @@ namespace LaborRisk.LegalEngine
                 if (string.IsNullOrWhiteSpace(snippet))
                     continue;
                 string pattern = System.Text.RegularExpressions.Regex.Escape(snippet.Trim());
-                pattern = System.Text.RegularExpressions.Regex.Replace(pattern, @"\s+", @"\s*");
-                highlightedText = System.Text.RegularExpressions.Regex.Replace(highlightedText, pattern, "<mark class='bg-warning text-dark p-1 rounded'>$0</mark>", System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline);
+                pattern = System.Text.RegularExpressions.Regex.Replace(pattern, @"\s+", @"\s+");
+                highlightedText = System.Text.RegularExpressions.Regex.Replace(highlightedText, pattern, "<mark class='bg-warning text-dark p-1 rounded'>$0</mark>", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             }
 
             return highlightedText.Replace("\n", "<br />");
@@ -53,7 +53,7 @@ namespace LaborRisk.LegalEngine
                     string text = p.InnerText?.Trim();
                     if (!string.IsNullOrEmpty(text))
                     {
-                        sb.AppendLine(text);
+                        sb.Append(text + " ");
                     }
                 }
             }
@@ -74,7 +74,7 @@ namespace LaborRisk.LegalEngine
                 string pageText = page.Text?.Trim();
                 if (!string.IsNullOrEmpty(pageText))
                 {
-                    sb.AppendLine(pageText);
+                    sb.Append(pageText + " ");
                 }
             }
             string rawText = sb.ToString();

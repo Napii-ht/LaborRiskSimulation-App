@@ -3,6 +3,7 @@
 @page "/upload-contract"
 @using LaborRisk.Domain
 @using LaborRisk.LegalEngine
+@using System.Text.RegularExpressions
 @inject DocumentReaderService DocService
 @inject ContractParserAgent ParserAgent
 @rendermode InteractiveServer
@@ -108,19 +109,21 @@
         foreach (var clause in parsedContract.Clauses)
         {
             if (string.IsNullOrWhiteSpace(clause.OriginalText))
-            continue;
-            {
-                string targetText = clause.OriginalText.Replace("\r", "").Trim();
-                if (highlightedText.Contains(targetText))
-                {
-                    // Tô đậm đoạn văn bản rủi ro bằng màu vàng
-                    string replacement = $"<mark style='background-color: #ffeb3b; font-weight: bold; padding: 2px 4px; border-radius: 3px;'>{clause.OriginalText}</mark>";
-                    highlightedText = highlightedText.Replace(clause.OriginalText, replacement);
-                }
-            }
+                continue;
+
+            string targetText = clause.OriginalText.Replace("\r", "").Trim();
+            string pattern = Regex.Escape(targetText);
+            pattern = Regex.Replace(pattern, @"\\\s+", @"\s+");
+
+            highlightedText = Regex.Replace(
+                highlightedText,
+                pattern,
+                match => $"<mark style='background-color: #ffeb3b; font-weight: bold; padding: 2px 4px; border-radius: 3px;'>{match.Value}</mark>",
+                RegexOptions.IgnoreCase
+            );
         }
 
-        return highlightedText;
+        return highlightedText.Replace("\n", "<br />");
     }
 
     private async Task LoadFile(InputFileChangeEventArgs e)

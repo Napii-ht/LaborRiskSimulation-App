@@ -237,12 +237,12 @@ Hãy viết một đoạn nhận xét và đưa ra lời khuyên hoàn chỉnh (
                 {
                     // In ra mã lỗi khi Ollama phản hồi lỗi
                     var errorContent = await response.Content.ReadAsStringAsync();
-                    return $"[LỖI OLLAMA HTTP]: {response.StatusCode} - {errorContent}";
+                    Console.WriteLine($"Ollama Error: {response.StatusCode} - {errorContent}");
                 }
             }
             catch (Exception ex)
             {
-                return $"[LỖI EXCEPTION]: {ex.Message}";
+                Console.WriteLine($"Exception caught: {ex.Message}");
             }
 
             // 3. Phản hồi dự phòng an toàn (Backup) giúp nút bấm xử lý tức thì

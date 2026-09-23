@@ -26,8 +26,8 @@ namespace LaborRisk.LegalEngine
         public async Task<ContractAnalysisResult> ExtractDataAsync(string rawText, string apiKey = "")
         {
             string activeKey = !string.IsNullOrWhiteSpace(apiKey)
-                ? apiKey
-                : (_configuration["GroqApiKey"] ?? Environment.GetEnvironmentVariable("GROQ_API_KEY") ?? "");
+                                ? apiKey
+    :                            (_configuration["GroqApiKey"] ?? _configuration["GROQ_API_KEY"] ?? Environment.GetEnvironmentVariable("GROQ_API_KEY") ?? Environment.GetEnvironmentVariable("GroqApiKey") ?? "");
 
             if (string.IsNullOrWhiteSpace(rawText))
                 return FallbackMock(rawText);
@@ -180,6 +180,7 @@ Hãy trả về kết quả dưới dạng ĐÚNG 1 cấu trúc JSON duy nhất 
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"[EXCEPTION TRONG PARSER]: {ex.Message}");
                 return FallbackMock(rawText);
 
             }

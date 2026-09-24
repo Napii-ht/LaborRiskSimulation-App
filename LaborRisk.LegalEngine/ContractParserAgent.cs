@@ -27,7 +27,11 @@ namespace LaborRisk.LegalEngine
         {
             string activeKey = !string.IsNullOrWhiteSpace(apiKey)
                                 ? apiKey
-    :                            (_configuration["GroqApiKey"] ?? _configuration["GROQ_API_KEY"] ?? Environment.GetEnvironmentVariable("GROQ_API_KEY") ?? Environment.GetEnvironmentVariable("GroqApiKey") ?? "");
+                                : (Environment.GetEnvironmentVariable("GROQ_API_KEY")
+                                ?? Environment.GetEnvironmentVariable("GroqApiKey")
+                                ?? _configuration["GROQ_API_KEY"]
+                                ?? _configuration["GroqApiKey"]
+                                ?? "");
 
             if (string.IsNullOrWhiteSpace(rawText))
                 return FallbackMock(rawText);

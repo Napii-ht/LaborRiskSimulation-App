@@ -3,6 +3,7 @@ using LaborRisk.LegalEngine;
 using LaborRisk.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddEnvironmentVariables();
 
 // 1. Đăng ký HttpClient để gọi Ollama
 builder.Services.AddHttpClient<ContractParserAgent>();

@@ -57,7 +57,7 @@ namespace LaborRisk.Tests.Benchmarks
         }
     }
 
-    // Các Class DTO hứng dữ liệu từ file JSON (Khai báo ngay bên dưới)
+    // Các Class DTO nhận dữ liệu từ file JSON
     public class BenchmarkScenario
     {
         public string ScenarioId { get; set; }

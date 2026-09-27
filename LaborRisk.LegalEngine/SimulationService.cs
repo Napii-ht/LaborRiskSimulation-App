@@ -186,7 +186,7 @@ namespace LaborRisk.LegalEngine
         }
         public async Task<SimulationTurnResult> ProcessUserNegotiationAsync(string clauseText, string legalExplanation, string userResponse)
         {
-            // Thử gọi AI (Ollama) trước để nhận xét linh hoạt
+            // Gọi AI (Ollama) trước để nhận xét linh hoạt
             string aiFeedback = await EvaluateUserNegotiationWithAIAsync(clauseText, legalExplanation, userResponse);
 
             return new SimulationTurnResult
